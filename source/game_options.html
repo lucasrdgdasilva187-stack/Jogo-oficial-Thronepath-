@@ -1,0 +1,41 @@
+<div id="overlay"><img id="menuArtwork" src="__MENU_ART_DATA__" alt="Thronepath: castelos, vila e montanhas" draggable="false"><div class="panel" id="menuPanel">
+<h1 id="menuTitle">THRONEPATH</h1><div id="mainButtons"><button id="play" class="primary">Jogar</button><button id="openOptions">Opções</button><button id="openAchievements">Conquistas</button><button id="openTutorial">Tutorial</button></div><div id="stats"></div>
+<button id="homeMenu" hidden>Voltar ao menu</button>
+<div id="resetConfirm" hidden><p>Voltar à fase 1 e apagar o progresso desta jornada?</p><div class="confirmButtons"><button id="cancelReset">Cancelar</button><button id="confirmReset" class="primary">Começar do zero</button></div></div>
+</div>
+<section class="panel settingsPanel" id="settingsPanel" hidden aria-label="Opções do jogo">
+<header class="settingsHeader"><h2 id="settingsHeading">Opções</h2><button id="optionsBack">Voltar</button></header>
+<nav id="settingsTabs" aria-label="Categorias das opções">
+<button data-tab="audioSettings" class="selected">Áudio</button><button data-tab="hudSettings">HUD e controles</button><button data-tab="qualitySettings">Visual</button><button data-tab="progressSettings">Progresso</button>
+</nav>
+<div class="settingsBody">
+<section id="audioSettings" class="settingsTab"><h3>Áudio</h3>
+<div class="presetRow"><button data-volume="25">Baixo</button><button data-volume="55">Médio</button><button data-volume="85">Alto</button></div>
+<label class="rangeLabel">Volume geral <output id="masterValue">85%</output><input id="masterSetting" type="range" min="0" max="100" value="85"></label>
+<label class="rangeLabel">Música <output id="musicValue">80%</output><input id="musicSetting" type="range" min="0" max="100" value="80"></label>
+<label class="rangeLabel">Efeitos de pulo, morte e objetos <output id="effectsValue">85%</output><input id="effectsSetting" type="range" min="0" max="100" value="85"></label>
+<label class="checkLabel"><input id="muteSetting" type="checkbox"> Silenciar tudo</label>
+<p class="settingNote">O som começa após tocar em Jogar. Seus ajustes ficam salvos neste navegador.</p><button id="defaultAudio">Restaurar áudio</button></section>
+<section id="hudSettings" class="settingsTab" hidden><h3>HUD e controles</h3><div class="settingsColumns">
+<div><label class="checkLabel"><input id="deathsSetting" type="checkbox" checked> Mostrar mortes</label><label class="checkLabel"><input id="timeSetting" type="checkbox" checked> Mostrar tempo</label>
+<label class="checkLabel"><input id="compactSetting" type="checkbox"> HUD compacto</label>
+<label class="rangeLabel">Tamanho do HUD <output id="hudValue">100%</output><input id="hudSetting" type="range" min="80" max="120" value="100"></label></div>
+<div><p class="settingNote">Arraste cada botão para onde preferir e ajuste o tamanho de esquerda, direita e pulo separadamente.</p><button id="editControls">Personalizar botões</button>
+<label class="checkLabel"><input id="motionSetting" type="checkbox" checked> Paralaxe</label><label class="checkLabel"><input id="particlesSetting" type="checkbox" checked> Partículas</label></div></div>
+<button id="defaultControls">Restaurar HUD e controles</button></section>
+<section id="tutorialSettings" class="settingsTab" hidden aria-label="Tutorial animado">
+<canvas id="tutorialCanvas" width="960" height="400" role="img" aria-label="Demonstração animada de movimento, salto, plataformas, inimigos, barreiras, checkpoints e portas"></canvas>
+<div class="tutorialToolbar"><button id="tutorialPrev" aria-label="Exemplo anterior">◀</button><div class="tutorialDots" aria-label="Escolher exemplo">
+<button id="tutorialDot0" aria-label="Andar para esquerda e direita" aria-current="true">↔</button><button id="tutorialDot1" aria-label="Pular um intervalo">↗</button><button id="tutorialDot2" aria-label="Usar plataforma móvel">⇆</button><button id="tutorialDot3" aria-label="Saltar antes de a plataforma desaparecer">▱</button><button id="tutorialDot4" aria-label="Derrotar um monstro pelo topo">✦</button><button id="tutorialDot5" aria-label="Esperar o intervalo de uma barreira">◷</button><button id="tutorialDot6" aria-label="Ativar checkpoint e reaparecer">⚑</button><button id="tutorialDot7" aria-label="Pegar a chave e entrar na porta">⚿</button></div><button id="tutorialPlay" aria-label="Pausar animação">Ⅱ</button><button id="tutorialNext" aria-label="Próximo exemplo">▶</button></div>
+</section>
+<section id="achievementsSettings" class="settingsTab" hidden><h3>Conquistas <span id="achievementCount">0 / 150</span></h3><div id="achievementList"></div></section>
+<section id="qualitySettings" class="settingsTab" hidden><h3>Visual do jogo</h3><label class="rangeLabel" for="qualitySetting">Qualidade<select id="qualitySetting"><option value="soft">Suave — cenário ilustrado e leve</option><option value="high">Alta — cenário e texturas detalhados</option></select></label><p class="settingNote">A mudança aparece no cenário e nas plataformas. Os controles e a dificuldade são os mesmos.</p></section>
+<section id="progressSettings" class="settingsTab" hidden><h3>Progresso</h3><p id="progressSummary"></p><button id="levels">Selecionar fase</button><div id="grid" hidden></div><div id="options"><button id="restartPhase">Reiniciar esta fase</button><button id="resetDeaths">Zerar contador de mortes</button><button id="resetTime">Zerar tempo total</button><button id="restoreSettings">Restaurar configurações</button><button id="newGame">Novo jogo</button></div><p class="settingNote">A seleção mostra apenas fases liberadas. Novo jogo reinicia as fases, mas mantém suas conquistas.</p></section>
+</div></section>
+<section class="panel endingCredits" id="creditsPanel" hidden aria-label="Créditos finais"><div id="creditsContent"><h2>THRONEPATH</h2><p id="creditsSummary" class="victorySummary"></p><p>Criador, desenvolvedor e ideia<br><strong>Lucas Rodrigues da Silva</strong></p><p>Desenvolvimento com inteligência artificial<br>ChatGPT e Lovable</p><p>Inspiração da jogabilidade: Level Devil<br>Referências visuais: Pinterest<br>Personagem: inteligência artificial</p><p>Primeiro a zerar: João Pedro<br>Speedrun: Carlos Daniel</p><p>Testes e colaboração<br>Maurício Abmael · Lucas Coêlho · Jorge Ricardo<br>Carlos Daniel · André Alencar</p><p>Músicas fornecidas pelo criador<br>Sweden (Piano) — Cozy Keys<br>Under the Earth (Lofi) — Inert</p><p class="menuLead">Cada salto aproxima você do trono.</p><p>Obrigado por jogar.</p></div><button id="creditsBack" hidden>Voltar ao menu</button></section>
+</div><p id="versionLabel" class="versionLabel">1.5.1</p>
+
+<section id="controlEditor" hidden aria-label="Personalizar controles"><button id="toggleControlToolbar" aria-label="Mostrar ou esconder painel de edição">⚙</button>
+<div id="controlEditArea"><button id="edit-left" aria-label="Arrastar botão de esquerda"></button><button id="edit-right" aria-label="Arrastar botão de direita"></button><button id="edit-jump" aria-label="Arrastar botão de pulo"></button></div>
+<div id="controlEditorToolbar"><p>Toque em um botão e arraste para mudar sua posição.</p><div class="controlEditorRow"><button id="choose-left">Esquerda</button><button id="choose-right">Direita</button><button id="choose-jump">Pulo</button><label for="editSize">Tamanho</label><input id="editSize" type="range" min="40" max="140" value="64"><output id="editSizeValue">64 px</output></div><div class="controlEditorRow"><button id="resetControlDraft">Restaurar</button><button id="cancelControls">Cancelar</button><button id="saveControls">Salvar</button></div></div>
+</section>

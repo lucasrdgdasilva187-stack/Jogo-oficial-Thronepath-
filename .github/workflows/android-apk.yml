@@ -1,0 +1,75 @@
+name: Gerar APK Thronepath
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+permissions:
+  contents: read
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Montar HTML completo
+        run: python3 scripts/assemble-game.py
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Instalar dependencias de teste
+        run: npm install --ignore-scripts
+      - name: Testar jogo completo
+        run: |
+          node tests/changes.cjs
+          node tests/integration.cjs
+          node tests/geometry.cjs
+          node tests/spring_routes.cjs
+          node tests/routes.cjs
+          node tests/encounters.cjs
+          node tests/control_alignment.cjs
+          node tests/revision152.cjs
+          node tests/review_regressions.cjs
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.13'
+      - name: Preparar Android SDK
+        run: |
+          yes | sdkmanager --licenses > /dev/null || true
+          sdkmanager "platforms;android-36" "build-tools;35.0.0"
+      - name: Preparar assinatura, se configurada
+        id: signing
+        env:
+          KEYSTORE_BASE64: ${{ secrets.THRONEPATH_KEYSTORE_BASE64 }}
+          THRONEPATH_STORE_PASSWORD: ${{ secrets.THRONEPATH_STORE_PASSWORD }}
+          THRONEPATH_KEY_ALIAS: ${{ secrets.THRONEPATH_KEY_ALIAS }}
+          THRONEPATH_KEY_PASSWORD: ${{ secrets.THRONEPATH_KEY_PASSWORD }}
+        run: |
+          if [ -n "$KEYSTORE_BASE64" ] && [ -n "$THRONEPATH_STORE_PASSWORD" ] && [ -n "$THRONEPATH_KEY_ALIAS" ] && [ -n "$THRONEPATH_KEY_PASSWORD" ]; then
+            printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/thronepath-release.jks"
+            printf 'release=true\n' >> "$GITHUB_OUTPUT"
+          else
+            printf 'release=false\n' >> "$GITHUB_OUTPUT"
+          fi
+      - name: Compilar APK completo
+        env:
+          SIGNED_RELEASE: ${{ steps.signing.outputs.release }}
+          THRONEPATH_STORE_PASSWORD: ${{ secrets.THRONEPATH_STORE_PASSWORD }}
+          THRONEPATH_KEY_ALIAS: ${{ secrets.THRONEPATH_KEY_ALIAS }}
+          THRONEPATH_KEY_PASSWORD: ${{ secrets.THRONEPATH_KEY_PASSWORD }}
+        run: |
+          if [ "$SIGNED_RELEASE" = 'true' ]; then
+            export THRONEPATH_KEYSTORE_FILE="$RUNNER_TEMP/thronepath-release.jks"
+            gradle --no-daemon :app:assembleRelease
+          else
+            gradle --no-daemon :app:assembleDebug
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Thronepath-APK
+          path: app/build/outputs/apk/**/*.apk
+          if-no-files-found: error
+          retention-days: 30

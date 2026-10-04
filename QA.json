@@ -1,0 +1,6 @@
+{
+  "version": "1.5.2",
+  "html_sha256": "3bbd55fa7b23d0c649e75d058a6d579d845ae6a46b3b8312739e6ea8fb95e69e",
+  "android_build": "pending: GitHub write 403; no local Gradle/Android SDK",
+  "html_tests": "QA_HTML.json"
+}

@@ -1,0 +1,12 @@
+#controls,#controlEditArea{position:absolute;inset:max(8px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left));display:block;pointer-events:none}
+#controls div{display:contents;transform:none}
+#controls button,#controlEditArea button{position:absolute;padding:0;display:grid;place-items:center;pointer-events:auto;touch-action:none}
+#controlEditor{position:absolute;inset:0;z-index:15;background:#12283c35;touch-action:none}
+#controlEditArea button{border:3px solid #7996a4;border-bottom:5px solid #526b7c;border-radius:23%;background:linear-gradient(140deg,#24465be8,#183447e8);box-shadow:inset 0 2px 0 #bcced52b,0 4px 0 #10233265;font-size:0}
+#controlEditArea button::before{content:"";width:var(--arrow-size);height:var(--arrow-size);background:#f4f3df;clip-path:polygon(20% 10%,90% 50%,20% 90%,25% 50%)}
+#edit-left::before{transform:rotate(180deg)}#edit-jump::before{transform:rotate(-90deg)}
+#controlEditArea button.selected{outline:3px solid #f5d68a;outline-offset:4px}
+#controlEditorToolbar{position:absolute;top:max(12px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);width:min(580px,94%);padding:10px 14px;border:2px solid #d2b675;border-radius:14px;background:#132b3def;box-shadow:0 8px 25px #0005;text-align:center}
+#controlEditorToolbar p{margin:2px 0 8px;font-size:13px;color:#eddbb5}.controlEditorRow{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:7px}.controlEditorRow button{font-size:12px;padding:6px 12px;min-height:32px;border-radius:8px}.controlEditorRow button[aria-pressed="true"]{background:#d5b572;color:#142b3c}.controlEditorRow input{width:min(210px,40vw);accent-color:#dfbd76}.controlEditorRow label,.controlEditorRow output{font-size:12px}.editingControls #hud,.editingControls #controls,.editingControls #tip,.editingControls #bossProgress{display:none!important}
+#menuArtwork{image-rendering:auto;filter:none}
+#toggleControlToolbar{position:absolute;top:max(12px,env(safe-area-inset-top));right:max(12px,env(safe-area-inset-right));width:40px;height:40px;padding:0;font-size:20px;z-index:1;background:#132b3def}

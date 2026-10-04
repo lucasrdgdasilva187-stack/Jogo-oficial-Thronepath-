@@ -1,0 +1,54 @@
+plugins { id 'com.android.application' }
+
+def signingFile = System.getenv('THRONEPATH_KEYSTORE_FILE')
+def canSign = signingFile && System.getenv('THRONEPATH_STORE_PASSWORD') &&
+        System.getenv('THRONEPATH_KEY_ALIAS') && System.getenv('THRONEPATH_KEY_PASSWORD')
+
+android {
+    namespace 'com.lucasrodrigues.thronepath'
+    compileSdk 36
+    buildToolsVersion '35.0.0'
+    buildFeatures {
+        buildConfig true
+    }
+    defaultConfig {
+        applicationId 'com.lucasrodrigues.thronepath'
+        minSdk 24
+        targetSdk 36
+        versionCode 8
+        versionName '1.5.2-alpha'
+    }
+    if (canSign) {
+        signingConfigs {
+            release {
+                storeFile file(signingFile)
+                storePassword System.getenv('THRONEPATH_STORE_PASSWORD')
+                keyAlias System.getenv('THRONEPATH_KEY_ALIAS')
+                keyPassword System.getenv('THRONEPATH_KEY_PASSWORD')
+            }
+        }
+    }
+    buildTypes {
+        debug { debuggable true }
+        release {
+            minifyEnabled false
+            if (canSign) signingConfig signingConfigs.release
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    sourceSets.main.assets.srcDirs = ['../web']
+}
+
+dependencies {
+    implementation 'androidx.webkit:webkit:1.16.0'
+}
+
+tasks.register('checkSigning') {
+    doLast {
+        if (!canSign) throw new GradleException('Configure a chave de assinatura antes de gerar a versão release.')
+    }
+}
+tasks.matching { it.name == 'preReleaseBuild' }.configureEach { dependsOn 'checkSigning' }

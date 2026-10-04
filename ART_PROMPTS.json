@@ -1,0 +1,55 @@
+{
+  "version": "1.3.0-alpha",
+  "assets": [
+    {"name":"menu","file":"art/menu.webp","method":"Built-in image generation, precise-object-edit","reference":"User's Thronepath title-screen image; painted buttons removed for live HTML controls","prompt":"Use case: precise-object-edit. Asset: illustrated background for the initial menu of the game Thronepath, horizontal 16:9. Image 1 is the edit target. Remove ALL four parchment menu buttons, their ornamented frames, and the words JOGAR, OPÇÕES, CRÉDITOS, SAIR. Reconstruct the scenery naturally behind those removed buttons: medieval mountain valley, river, village rooftops and terraces. Keep the ornate THRONEPATH title banner at the top, spelling THRONEPATH exactly; keep its gold, shape, size, and location. Preserve the blue-roof castle on the left, distant orange castle on the right, mountain ranges, pixel-painted illustration style, color palette, lighting and full-bleed landscape composition. The middle and lower middle are unobstructed scenery so real clickable HTML controls can be overlaid later. No replacement buttons, no new UI panels, no other text or characters."},
+    {
+      "name": "village",
+      "file": "art/village.webp",
+      "method": "Built-in image generation, style transfer",
+      "reference": "Original illustrated forest from the game",
+      "prompt": "Use case: style-transfer. Asset: horizontal 16:9 background for Thronepath, a 2D platform game. Image 1 is the background to replace; image 2 is the EXACT ART STYLE reference, the original illustrated forest. Repaint image 1 in the clear hand-painted 2D videogame illustration style of image 2: large readable brush shapes, simplified materials, gentle layered depth, moderate detail, soft painted lighting, no photographic textures or realistic microdetail. Scene: medieval village with half-timbered houses, rolling green hills and a horizontal cobbled village path low in the picture. Side-on game scenery, welcoming warm sunlight. Preserve the biome and its atmosphere; change the rendering style decisively. Compose the scene as distant background scenery for a side-scrolling platform game. No text, menus, HUD, buttons, characters, enemies, saws or floating playable platforms. Do not include the reference forest's subject unless appropriate. Full-bleed landscape image, coherent colors, clear middle gameplay space."
+    },
+    {
+      "name": "snow",
+      "file": "art/snow.webp",
+      "method": "Built-in image generation, style transfer",
+      "reference": "Original illustrated forest from the game",
+      "prompt": "Use case: style-transfer. Asset: horizontal 16:9 background for Thronepath, a 2D platform game. Image 1 is the background to replace; image 2 is the EXACT ART STYLE reference, the original illustrated forest. Repaint image 1 in the clear hand-painted 2D videogame illustration style of image 2: large readable brush shapes, simplified materials, gentle layered depth, moderate detail, soft painted lighting, no photographic textures or realistic microdetail. Scene: snowy alpine valley, simplified snow-covered pine silhouettes and layered blue mountains, stylized ice rocks. Broad blue-white shapes with clearly painted shadows. Preserve the biome and its atmosphere; change the rendering style decisively. Compose the scene as distant background scenery for a side-scrolling platform game. No text, menus, HUD, buttons, characters, enemies, saws or floating playable platforms. Do not include the reference forest's subject unless appropriate. Full-bleed landscape image, coherent colors, clear middle gameplay space."
+    },
+    {
+      "name": "cave",
+      "file": "art/cave.webp",
+      "method": "Built-in image generation, style transfer",
+      "reference": "Original illustrated forest from the game",
+      "prompt": "Use case: style-transfer. Asset: horizontal 16:9 background for Thronepath, a 2D platform game. Image 1 is the background to replace; image 2 is the EXACT ART STYLE reference, the original illustrated forest. Repaint image 1 in the clear hand-painted 2D videogame illustration style of image 2: large readable brush shapes, simplified materials, gentle layered depth, moderate detail, soft painted lighting, no photographic textures or realistic microdetail. Scene: fantasy cave with cyan and violet crystals, layered slate-blue rock silhouettes, soft teal distant glow. Simplified crystal facets and chunky painted rocks. Preserve the biome and its atmosphere; change the rendering style decisively. Compose the scene as distant background scenery for a side-scrolling platform game. No text, menus, HUD, buttons, characters, enemies, saws or floating playable platforms. Do not include the reference forest's subject unless appropriate. Full-bleed landscape image, coherent colors, clear middle gameplay space."
+    },
+    {
+      "name": "coast",
+      "file": "art/coast.webp",
+      "method": "Built-in image generation, style transfer",
+      "reference": "Original illustrated forest from the game",
+      "prompt": "Use case: style-transfer. Asset: horizontal 16:9 background for Thronepath, a 2D platform game. Image 1 is the background to replace; image 2 is the EXACT ART STYLE reference, the original illustrated forest. Repaint image 1 in the clear hand-painted 2D videogame illustration style of image 2: large readable brush shapes, simplified materials, gentle layered depth, moderate detail, soft painted lighting, no photographic textures or realistic microdetail. Scene: misty coast and wetland, muted teal water, reeds at the edges, stylized coastal cliffs and a subdued warm horizon. Quiet ominous mood, readable shapes. Preserve the biome and its atmosphere; change the rendering style decisively. Compose the scene as distant background scenery for a side-scrolling platform game. No text, menus, HUD, buttons, characters, enemies, saws or floating playable platforms. Do not include the reference forest's subject unless appropriate. Full-bleed landscape image, coherent colors, clear middle gameplay space."
+    },
+    {
+      "name": "ruins",
+      "file": "art/ruins.webp",
+      "method": "Built-in image generation, style transfer",
+      "reference": "Original illustrated forest from the game",
+      "prompt": "Use case: style-transfer. Asset: horizontal 16:9 background for Thronepath, a 2D platform game. Image 1 is the background to replace; image 2 is the EXACT ART STYLE reference, the original illustrated forest. Repaint image 1 in the clear hand-painted 2D videogame illustration style of image 2: large readable brush shapes, simplified materials, gentle layered depth, moderate detail, soft painted lighting, no photographic textures or realistic microdetail. Scene: ancient stone ruins with broken columns, arches and moss, layered valley behind them in amber dusk light. Large simplified stone blocks matching the game's 2D masonry. Preserve the biome and its atmosphere; change the rendering style decisively. Compose the scene as distant background scenery for a side-scrolling platform game. No text, menus, HUD, buttons, characters, enemies, saws or floating playable platforms. Do not include the reference forest's subject unless appropriate. Full-bleed landscape image, coherent colors, clear middle gameplay space."
+    },
+    {
+      "name": "castle_outside",
+      "file": "art/castle_outside.webp",
+      "method": "Built-in image generation, style transfer",
+      "reference": "Original illustrated forest from the game",
+      "prompt": "Use case: style-transfer. Asset: horizontal 16:9 background for Thronepath, a 2D platform game. Image 1 is the background to replace; image 2 is the EXACT ART STYLE reference, the original illustrated forest. Repaint image 1 in the clear hand-painted 2D videogame illustration style of image 2: large readable brush shapes, simplified materials, gentle layered depth, moderate detail, soft painted lighting, no photographic textures or realistic microdetail. Scene: the final medieval castle beyond a broad valley, towers and arched gate, blue-grey mountains and warm dusk sky. Clearly an illustrated fantasy game location. Preserve the biome and its atmosphere; change the rendering style decisively. Compose the scene as distant background scenery for a side-scrolling platform game. No text, menus, HUD, buttons, characters, enemies, saws or floating playable platforms. Do not include the reference forest's subject unless appropriate. Full-bleed landscape image, coherent colors, clear middle gameplay space."
+    },
+    {
+      "name": "castle_inside",
+      "file": "art/castle_inside.webp",
+      "method": "Built-in image generation, style transfer",
+      "reference": "Original illustrated forest from the game",
+      "prompt": "Use case: style-transfer. Asset: horizontal 16:9 background for Thronepath, a 2D platform game. Image 1 is the background to replace; image 2 is the EXACT ART STYLE reference, the original illustrated forest. Repaint image 1 in the clear hand-painted 2D videogame illustration style of image 2: large readable brush shapes, simplified materials, gentle layered depth, moderate detail, soft painted lighting, no photographic textures or realistic microdetail. Scene: inside the final medieval castle: gothic arches, slate stone walls, blue windows and red banners. Small gold-and-red throne in the distance; leave the foreground clear for the actual interactive throne. Preserve the biome and its atmosphere; change the rendering style decisively. Compose the scene as distant background scenery for a side-scrolling platform game. No text, menus, HUD, buttons, characters, enemies, saws or floating playable platforms. Do not include the reference forest's subject unless appropriate. Full-bleed landscape image, coherent colors, clear middle gameplay space."
+    }
+  ]
+}

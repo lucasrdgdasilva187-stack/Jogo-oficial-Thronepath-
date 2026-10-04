@@ -1,0 +1,76 @@
+{
+  "version": "1.5.2",
+  "tests": [
+    {
+      "suite": "changes",
+      "exit_code": 0,
+      "output": "[\n  {\n    \"name\": \"150 unique achievements preserve original awards\",\n    \"passed\": true\n  },\n  {\n    \"name\": \"Every phase 2–20 introduces interactive content\",\n    \"passed\": true\n  },\n  {\n    \"name\": \"First five stages contain no hazards or enemies\",\n    \"passed\": true\n  },\n  {\n    \"name\": \"Stages six to eight mix increasing hazards\",\n    \"passed\": true\n  },\n  {\n    \"name\": \"Gravity appears before phase 20 and can return to normal\",\n    \"passed\": true\n  },\n  {\n    \"name\": \"Three distinguishable spring strengths\",\n    \"passed\": true\n  },\n  {\n    \"name\": \"Saw reaches a standing character on its support\",\n    \"passed\": true\n  },\n  {\n    \"name\": \"Fire vents and jaw traps occur in campaign\",\n    \"passed\": true\n  },\n  {\n    \"name\": \"Suave and Alta select different actual rendering profiles\",\n    \"passed\": true\n  }\n]\n",
+      "error": ""
+    },
+    {
+      "suite": "integration",
+      "exit_code": 0,
+      "output": "{\n  \"passed\": true,\n  \"phases\": 51,\n  \"achievements\": 150,\n  \"springHeights\": [\n    169,\n    254,\n    392\n  ],\n  \"sawJump\": true,\n  \"floorTrapCycles\": true,\n  \"saveMigration\": true,\n  \"tutorial\": 8,\n  \"checkpoints\": true,\n  \"touch\": true,\n  \"rendered\": true\n}\n",
+      "error": ""
+    },
+    {
+      "suite": "geometry",
+      "exit_code": 0,
+      "output": "[\n  {\n    \"name\": \"Stage one is an actual grounded street\",\n    \"passed\": true\n  },\n  {\n    \"name\": \"Springs have explicit destinations above normal jump height\",\n    \"passed\": true\n  },\n  {\n    \"name\": \"Routes contain sustained stairs up and down\",\n    \"passed\": true\n  },\n  {\n    \"name\": \"Pursuit rockets have a visible launcher\",\n    \"passed\": true\n  }\n]\n",
+      "error": ""
+    },
+    {
+      "suite": "spring_routes",
+      "exit_code": 0,
+      "output": "{\"passed\":true,\"springDestinations\":89}\n",
+      "error": ""
+    },
+    {
+      "suite": "routes",
+      "exit_code": 0,
+      "output": "{\"passed\":true,\"forward\":1637,\"returning\":1637,\"moving\":592}\n",
+      "error": ""
+    },
+    {
+      "suite": "encounters",
+      "exit_code": 0,
+      "output": "{\"passed\":true,\"isolatedHazards\":435}\n",
+      "error": ""
+    },
+    {
+      "suite": "review_regressions",
+      "exit_code": 0,
+      "output": "{ failures: [] }\n",
+      "error": ""
+    },
+    {
+      "suite": "control_alignment",
+      "exit_code": 0,
+      "output": "Default and legacy controls aligned; custom placement preserved\n",
+      "error": ""
+    },
+    {
+      "suite": "revision152",
+      "exit_code": 0,
+      "output": "Village walking, short empty supports, grouped enemies, fake traps, compact/full HUD and centered controls verified\n",
+      "error": ""
+    },
+    {
+      "suite": "village_render",
+      "exit_code": 0,
+      "output": "Village art decoded, grounded views rendered\n",
+      "error": ""
+    },
+    {
+      "suite": "render",
+      "exit_code": 0,
+      "output": "Decoded and rendered both backgrounds\n",
+      "error": ""
+    }
+  ],
+  "limitations": "Node VM with DOM stubs and native Canvas; no real browser, physical phone or complete campaign playthrough.",
+  "final_checks": [
+    "Street paving render and revision152 test passed after visual change",
+    "Version labels v1.5.2 tested"
+  ]
+}
