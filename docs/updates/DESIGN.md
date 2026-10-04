@@ -1,0 +1,2 @@
+# Atualizações fora da Play Store
+Consultar uma vez por abertura a última release pública do repositório oficial, em uma thread com timeout. Só oferecer versão com versionCode superior, APK no próprio repositório e publicação não marcada como draft/prerelease. Falhas de rede não impedem jogar. Diálogo nativo Atualizar/Depois pausa o jogo; Atualizar abre o navegador para o APK, sem instalar silenciosamente. A chave permanente fica fora do repositório público. O APK de teste anterior tem outra assinatura e não pode receber esta primeira versão como atualização.

@@ -25,6 +25,7 @@ import java.io.ByteArrayInputStream;
 public final class MainActivity extends Activity {
     private static final String GAME_URL = "https://appassets.androidplatform.net/assets/index.html";
     private WebView game;
+    private boolean updateChecked;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -74,6 +75,22 @@ public final class MainActivity extends Activity {
             public void onPageFinished(WebView view, String url) {
                 view.evaluateJavascript("window.THRONEPATH_ANDROID=true", null);
                 immersive();
+                view.evaluateJavascript("document.querySelectorAll('#versionBadge,.version-badge,#gameVersion').forEach(e=>e.textContent='v1.5.3')", null);
+                if (!updateChecked) {
+                    updateChecked = true;
+                    UpdateChecker.check(BuildConfig.VERSION_CODE, (version, download) -> runOnUiThread(() -> {
+                        if (isFinishing() || isDestroyed()) return;
+                        game.evaluateJavascript("window.ThronepathHost && window.ThronepathHost.suspend()", null);
+                        new AlertDialog.Builder(MainActivity.this)
+                            .setTitle("Nova versão disponível!")
+                            .setMessage("Thronepath " + version + " está disponível. Atualize para receber as melhorias.")
+                            .setPositiveButton("Atualizar", (dialog, which) -> {
+                                try { startActivity(new android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(download))); }
+                                catch (android.content.ActivityNotFoundException e) { android.widget.Toast.makeText(MainActivity.this, "Abra o GitHub do jogo para baixar a atualização.", android.widget.Toast.LENGTH_LONG).show(); }
+                            })
+                            .setNegativeButton("Depois", null).show();
+                    }));
+                }
             }
         });
         game.setWebChromeClient(new WebChromeClient() {
