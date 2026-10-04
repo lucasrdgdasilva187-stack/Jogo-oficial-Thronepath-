@@ -75,7 +75,7 @@ public final class MainActivity extends Activity {
             public void onPageFinished(WebView view, String url) {
                 view.evaluateJavascript("window.THRONEPATH_ANDROID=true", null);
                 immersive();
-                view.evaluateJavascript("document.querySelectorAll('#versionBadge,.version-badge,#gameVersion').forEach(e=>e.textContent='v1.5.3')", null);
+                view.evaluateJavascript("document.querySelectorAll('#versionLabel,#buildLabel').forEach(e=>e.textContent='v1.5.3')", null);
                 if (!updateChecked) {
                     updateChecked = true;
                     UpdateChecker.check(BuildConfig.VERSION_CODE, (version, download) -> runOnUiThread(() -> {
