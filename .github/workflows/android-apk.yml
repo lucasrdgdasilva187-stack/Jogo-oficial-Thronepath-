@@ -36,6 +36,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.13'
+      - uses: android-actions/setup-android@v3
       - name: Preparar Android SDK
         run: |
           yes | sdkmanager --licenses > /dev/null || true
@@ -73,3 +74,4 @@ jobs:
           path: app/build/outputs/apk/**/*.apk
           if-no-files-found: error
           retention-days: 30
+
