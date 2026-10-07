@@ -12,7 +12,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Montar HTML completo
-        run: python3 scripts/assemble-game.py
+        run: |
+          python3 scripts/assemble-game.py
+          python3 scripts/upgrade160.py
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -28,7 +30,18 @@ jobs:
           node tests/encounters.cjs
           node tests/control_alignment.cjs
           node tests/revision152.cjs
+          node tests/revision160.cjs
           node tests/review_regressions.cjs
+      - name: Testar navegador e telas pequenas
+        run: |
+          npx playwright install --with-deps chromium
+          node tests/browser160.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Thronepath-visual-QA
+          path: previews/browser160/
+          retention-days: 14
       - uses: actions/setup-java@v4
         with:
           distribution: temurin

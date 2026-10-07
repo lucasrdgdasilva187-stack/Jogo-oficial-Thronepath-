@@ -15,8 +15,8 @@ android {
         applicationId 'com.lucasrodrigues.thronepath'
         minSdk 24
         targetSdk 36
-        versionCode 9
-        versionName '1.5.3-alpha'
+        versionCode 10
+        versionName '1.6.0-alpha'
     }
     if (canSign) {
         signingConfigs {

@@ -5,20 +5,18 @@ function populateCourse(n,platforms,safe,hazards,machines,springs){
  function choose(fraction){const free=pool.filter(v=>!occupied.has(v.i)&&!safe.has(v.i));if(!free.length)return null;const target=Math.round(fraction*(platforms.length-1));free.sort((a,b)=>Math.abs(a.i-target)-Math.abs(b.i-target));const v=free[0];occupied.add(v.i);v.b.type='solid';v.b.ampX=v.b.ampY=0;return v;}
  function spring(fraction,tier){const v=choose(fraction);if(!v)return;const {b,i}=v;if(i+1>=platforms.length)return;occupied.add(i+1);safe.add(i+1);platforms[i+1].type='solid';platforms[i+1].ampX=platforms[i+1].ampY=0;const power=[660,820,1040][tier];springs.push({platform:i,x:b.x+b.w*.8,y:b.y,power,tier,offsetRatio:.8,targetPlatform:i+1,dir:0,timer:0,capHeight:[32,42,50][tier]});}
  function trap(fraction,type){const v=choose(fraction);if(!v)return;const {b,i}=v;
-  if(type==='saw'){const radius=n<20?22:n<40?27:34;hazards.push({type,platform:i,x:b.x+b.w/2,y:b.y-10,baseX:b.x+b.w/2,baseY:b.y-10,r:radius,amp:Math.max(12,b.w/2-72),phase:0,rail:n<9||(i+n)%5===1,motion:n<9?'horizontal':['static','horizontal','vertical','circular','horizontal'][(i+n)%5],speed:n<20?.9:1.15,false:n>=9&&n%7===2&&!hazards.some(h=>h.false)});}
-  else if(type==='spikes')hazards.push({type,platform:i,x:b.x+b.w/2-18,y:b.y,w:36,offsetX:b.w/2-18,hidden:n>=27&&(i+n)%4===0,warning:0,triggered:false,pulse:n%3!==0});
+  if(type==='saw'){const radius=n<20?22:n<40?27:34;hazards.push({type,platform:i,x:b.x+b.w/2,y:b.y-10,baseX:b.x+b.w/2,baseY:b.y-10,r:radius,amp:Math.max(12,b.w/2-72),phase:0,rail:true,speed:n<20?.9:1.15,false:n>=9&&n%7===2&&hazards.length===0});}
+  else if(type==='spikes')hazards.push({type,platform:i,x:b.x+b.w/2-18,y:b.y,w:36,offsetX:b.w/2-18,hidden:false,warning:0,triggered:false,pulse:true});
   else if(type==='jaw'||type==='fire')hazards.push({type,platform:i,x:b.x+b.w/2-24,y:b.y,w:48,offsetX:b.w/2-24,active:false,warning:false,phase:i*.31,period:type==='fire'?4.4:3.8});
-  else if(type==='crusher')hazards.push({type,platform:i,x:b.x+b.w/2-24,y:b.y-230,w:48,h:60,phase:i*.37,period:5.2,offsetX:b.w/2-24});
-  else if(type==='boulder')hazards.push({type,platform:i,x:b.x+b.w/2,y:b.y-17,r:17,amp:Math.max(30,b.w/2-38),phase:i,speed:.9});
-  else if(type==='pendulum')hazards.push({type,platform:i,x:b.x+b.w/2,y:b.y-22,baseX:b.x+b.w/2,baseY:b.y-150,r:23,amp:100,motion:'pendulum',length:110+(i%3)*35,arc:.55+(i%3)*.16,speed:.8+(n%3)*.25,phase:i});
-  else if(type==='laser')machines.push({type,platform:i,x:b.x+b.w*.54,y:b.y-290,w:8,h:290,phase:i*.43,active:false,warning:false});
-  else if(type==='launcher')machines.push({type,platform:i,x:b.x+b.w-18,y:b.y-31,dir:-1,direction:n>=26&&i%3===0?'vertical':'horizontal',period:3.8,phase:i*.71,last:-1});
+  else if(type==='pendulum')hazards.push({type,platform:i,x:b.x+b.w/2,y:b.y-22,baseX:b.x+b.w/2,baseY:b.y-150,r:19,amp:130,phase:i});
+  else if(type==='laser')machines.push({type,platform:i,x:b.x+b.w*.54,y:b.y-88,w:6,h:88,phase:i*.43,active:false,warning:false});
+  else if(type==='launcher')machines.push({type,platform:i,x:b.x+b.w-18,y:b.y-31,dir:-1,period:3.8,phase:i*.71,last:-1});
  }
  if(n>=1)spring(.28,n>=10?(n%3):n>=6?1:0);
  if(n>=12)spring(.45,(n+1)%3);
  // First five stages are a demonstration. Later stages mix several encounters.
  if(n>=5){
-  const kinds=n<7?['saw','spikes']:n<9?['saw','jaw','spikes']:n<14?['fire','saw','jaw','spikes','launcher']:n<24?['saw','fire','spikes','laser','jaw','launcher','boulder']:['saw','fire','jaw','laser','spikes','pendulum','launcher','crusher','boulder'];
+  const kinds=n<7?['saw','spikes']:n<8?['saw','jaw','spikes']:n<14?['fire','saw','jaw','spikes']:n<24?['saw','fire','spikes','laser','jaw']:n<30?['pendulum','jaw','saw','fire','laser','spikes']:['saw','fire','jaw','laser','spikes','pendulum','launcher'];
   const target=n===5?3:n===6?4:n<10?5:Math.max(5,Math.ceil(platforms.length/3));
   const count=Math.min(target,Math.max(0,pool.length-occupied.size-2));
   for(let j=0;j<count;j++)trap(.15+.76*(j+.5)/count,kinds[(j+n)%kinds.length]);

@@ -12,8 +12,7 @@ function makeTutorialScene(step){
  if(step===7){l.keys=[{platform:0,x:470,y:280,got:false}];l.door={x:807,y:216,w:56,h:94};}
  return s;
 }
-const TUTORIAL_CAPTIONS=['Ande com ← →, A/D ou direcional do controle.','Pule com ↑, espaço, botão na tela ou A do controle.','Espere a plataforma se aproximar antes de saltar.','A plataforma racha: avance antes que ela desapareça.','Caia sobre o topo do inimigo para derrotá-lo.','Observe a barreira e atravesse quando ela apagar.','Ative a bandeira: ela será seu ponto de retorno.','Pegue as chaves e alcance a porta.'];
-function setTutorialStep(n){tutorialStep=(n+TUTORIAL_STEPS)%TUTORIAL_STEPS;tutorialTime=0;$('tutorialCaption').textContent=TUTORIAL_CAPTIONS[tutorialStep];tutorialState=makeTutorialScene(tutorialStep);tutorialInput={};tutorialPaused=false;$('tutorialPlay').textContent='Ⅱ';$('tutorialPlay').setAttribute('aria-label','Pausar animação');for(let i=0;i<TUTORIAL_STEPS;i++)$('tutorialDot'+i).setAttribute('aria-current',String(i===tutorialStep));renderTutorial();}
+function setTutorialStep(n){tutorialStep=(n+TUTORIAL_STEPS)%TUTORIAL_STEPS;tutorialTime=0;tutorialState=makeTutorialScene(tutorialStep);tutorialInput={};tutorialPaused=false;$('tutorialPlay').textContent='Ⅱ';$('tutorialPlay').setAttribute('aria-label','Pausar animação');for(let i=0;i<TUTORIAL_STEPS;i++)$('tutorialDot'+i).setAttribute('aria-current',String(i===tutorialStep));renderTutorial();}
 function tutorialActive(){return !$('overlay').hidden&&!$('settingsPanel').hidden&&!$('tutorialSettings').hidden;}
 function tickTutorial(dt){
  if(!tutorialActive()||tutorialPaused)return;if(!tutorialState)tutorialState=makeTutorialScene(tutorialStep);tutorialTime+=dt;

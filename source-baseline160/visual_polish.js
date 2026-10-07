@@ -72,6 +72,5 @@ function drawPlatform(b,i){
   brush.line(x,y,x+b.w,y,'#e6d5b4',3);ctx.restore();return;
  }
  paintPlatform(ctx,{...b,x,y},i,biomeIndex(),qualityProfile().detail,clock);
- if(b.surface==='ice'){line(x+3,y+2,x+b.w-3,y+2,'#b9f4ff',3);}if(b.surface==='conveyor'){for(let q=10;q<b.w-10;q+=24){const xx=x+q+(clock*22%12);line(xx,y+5,xx+6,y+8,'#e7c487',2);line(xx+6,y+8,xx,y+11,'#e7c487',2);}}
- if(b.active&&state.level.pads.includes(i)){rr(x+3,y-5,b.w-6,6,2,'#9461d5');rr(x+b.w/2-24,y-9,48,9,2,'#c695fc');ctx.fillStyle='#f7e9ff';ctx.font='bold 17px Arial';ctx.fillText('↕',x+b.w/2-6,y-11);}
+ if(b.active&&state.level.pads.includes(i)){rr(x+b.w/2-18,y-8,36,8,2,'#a891bf');ctx.fillStyle='#f7e9ff';ctx.font='bold 17px Arial';ctx.fillText('↕',x+b.w/2-6,y-11);}
 }

@@ -38,7 +38,7 @@ function platformCode(n,i,code){
  const types=['n','m','n','c','v','n','b','n','d','n','r','n'];return types[(i+n)%types.length];
 }
 function placeRow(rows,n,i){
- const r=rows[i];r[2]=i===0?220:n<5?170+(n*13+i*7)%41:100+(n*31+i*43)%111;
+ const r=rows[i];r[2]=i===0?220:180+(n*13+i*7)%41;
  r[3]=platformCode(n,i,r[3]);
  if(i===0){r[0]=0;r[1]=440;return;}
  const a=rows[i-1];if(horizontalRange(a[3],n)&&horizontalRange(r[3],n))r[3]='n';
@@ -79,16 +79,14 @@ function makeLevel(n){
  const keyPlatforms=n>=20?[Math.floor(platforms.length*.35),Math.floor(platforms.length*.72)]:[];
  const checkpointCount=n<44?0:[1,2,2,3,3,4,5][n-44];
  const checkpoints=Array.from({length:checkpointCount},(_,i)=>({platform:Math.floor((i+1)*platforms.length/(checkpointCount+1)),active:false,number:i+1}));
- const reverseEntry=n>=17&&n%4===1?Math.floor(platforms.length*.55):-1;
- const safe=new Set([0,platforms.length-1,...(reverseEntry>=0?[reverseEntry]:[]),...keyPlatforms,...pads,...checkpoints.map(c=>c.platform),...pursuits.flatMap(c=>[c.triggerPlatform,c.endPlatform,...(c.type==='rocket'?[c.launchPlatform]:[])])]);
+ const safe=new Set([0,platforms.length-1,...keyPlatforms,...pads,...checkpoints.map(c=>c.platform),...pursuits.flatMap(c=>[c.triggerPlatform,c.endPlatform,...(c.type==='rocket'?[c.launchPlatform]:[])])]);
  for(let i=1;i<platforms.length-1;i++)if(Math.sign(platforms[i].x-platforms[i-1].x)!==Math.sign(platforms[i+1].x-platforms[i].x))safe.add(i);
  safe.forEach(i=>{platforms[i].type='solid';platforms[i].ampX=platforms[i].ampY=0;});
  populateCourse(n,platforms,safe,hazards,machines,springs);
  // Wider platforms are reserved for encounters and spring landings.
  const occupied=new Set([...hazards,...machines,...springs].map(v=>v.platform));
  springs.forEach(v=>occupied.add(v.targetPlatform));
- for(let i=0;i<platforms.length;i++)if(occupied.has(i))platforms[i].w=Math.max(platforms[i].w,240);
- for(const h of hazards){const b=platforms[h.platform];if(Number.isFinite(h.offsetX)){h.offsetX=b.w/2-h.w/2;h.x=b.x+h.offsetX;}if(h.type==='saw'||h.type==='boulder'){h.amp=h.motion==='circular'?55:h.motion==='vertical'?48:Math.max(20,b.w/2-65);}}
+ for(let i=0;i<platforms.length;i++)if(occupied.has(i))platforms[i].w=Math.max(platforms[i].w,280);
  // Preserve open movement ranges after changing widths.
  for(let i=1;i<platforms.length;i++){const a=platforms[i-1],b=platforms[i];const x=a.x+a.w+60+(a.ampX||0)+(b.ampX||0);const dx=x-b.x;b.x=b.baseX=x;for(const h of [...hazards,...machines])if(h.platform===i){h.x+=dx;if(Number.isFinite(h.baseX))h.baseX+=dx;}}
  shapeSpringRoutes(n,platforms,springs,hazards,machines);
@@ -100,57 +98,46 @@ function makeLevel(n){
  const previous=n>0?(measuredDistances[n-1]??makeLevel(n-1).distance):0;
  const minimum=n===50?previous*1.8:previous+100;
  while(n>0&&routeLength(platforms.map(b=>[b.x,b.y,b.w]))<minimum){const a=platforms[platforms.length-1],x=a.x+a.w+62+(a.ampX||0),y=a.y+(platforms.length%4<2?24:-24);platforms.push({x,y,baseX:x,baseY:y,w:180,h:44,type:'solid',grounded:false,active:true,ampX:0,ampY:0,dx:0,dy:0,timer:-1,triggerTime:-1,phase:0});}
- for(let i=1;i<platforms.length-1;i++){const b=platforms[i];if(safe.has(i)||occupied.has(i)||b.type!=='solid')continue;if(n>=12&&n<18&&i%5===0)b.surface='ice';else if(n>=28&&i%7===0)b.surface='conveyor';}
  const last=platforms[platforms.length-1];
  const distance=routeLength(platforms.map(b=>[b.x,b.y,b.w]));measuredDistances[n]=distance;const checkpointPositions=checkpoints.map(c=>platforms[c.platform].x);
- return{n,distance,checkpointPositions,platforms,hazards,machines,springs,enemies,training,checkpoints,pursuits,pads,keys:keyPlatforms.map(i=>({platform:i,x:platforms[i].x+platforms[i].w/2,y:platforms[i].y-30,got:false})),door:{x:last.x+last.w-78,y:last.y-94,w:56,h:94},width:Math.max(...platforms.map(b=>b.x+b.w))+75,maxY:Math.max(...platforms.map(b=>b.y))+45,minY:Math.min(...platforms.map(b=>b.y))-230,controlZones:n>=17&&n%4===1?[{platform:Math.floor(platforms.length*.55),duration:n<30?5:7}]:[],inverted:false,reverse:false,chase:false,scroll:false};
+ return{n,distance,checkpointPositions,platforms,hazards,machines,springs,enemies,training,checkpoints,pursuits,pads,keys:keyPlatforms.map(i=>({platform:i,x:platforms[i].x+platforms[i].w/2,y:platforms[i].y-30,got:false})),door:{x:last.x+last.w-78,y:last.y-94,w:56,h:94},width:Math.max(...platforms.map(b=>b.x+b.w))+75,maxY:Math.max(...platforms.map(b=>b.y))+45,minY:Math.min(...platforms.map(b=>b.y))-230,inverted:n>=35&&[38,46].includes(n),reverse:n>=35&&[35,42,49].includes(n),chase:false,scroll:false};
 }
-function start(n){const level=makeLevel(n);return{level,p:{x:55,y:level.platforms[0].y-50,w:30,h:50,vx:0,vy:0,ground:true,on:0,face:1,coyote:.13,jumpBuffer:0},t:0,gravity:1,reversed:false,padContact:-1,reverseUntil:0,reverseZonesUsed:[],checkpoint:-1,flippedPads:[],trail:[],rockets:[],pursuits:startPursuits(level),wall:-320,chaser:{x:-200,y:0,r:40},dead:false,won:false,boostTime:0};}
+function start(n){const level=makeLevel(n);return{level,p:{x:55,y:level.platforms[0].y-50,w:30,h:50,vx:0,vy:0,ground:true,on:0,face:1,coyote:.13,jumpBuffer:0},t:0,gravity:level.inverted?-1:1,reversed:level.reverse,checkpoint:-1,flippedPads:[],trail:[],rockets:[],pursuits:startPursuits(level),wall:-320,chaser:{x:-200,y:0,r:40},dead:false,won:false,boostTime:0};}
 function respawn(s){
- const next=start(s.level.n);next.t=s.t;next.checkpoint=s.checkpoint;next.gravity=1;next.reversed=false;next.flippedPads=[];next.padContact=-1;next.reverseUntil=0;
+ const next=start(s.level.n);next.t=s.t;next.checkpoint=s.checkpoint;next.gravity=s.gravity;next.flippedPads=s.flippedPads.slice();
  next.level.keys.forEach((k,i)=>k.got=s.level.keys[i].got);
  if(s.checkpoint>=0){next.level.checkpoints.forEach((c,i)=>c.active=i<=s.checkpoint);const b=next.level.platforms[next.level.checkpoints[s.checkpoint].platform];next.p.x=b.x+20;next.p.y=b.y-next.p.h;next.p.ground=true;next.p.on=next.level.checkpoints[s.checkpoint].platform;}
  return next;
 }
 function step(s,input,dt){
- if(s.dead||s.won)return;s.t+=dt;if(s.reversed&&s.t>=s.reverseUntil){s.reversed=false;s.message='CONTROLES NORMAIS';}const p=s.p,l=s.level,wasGrounded=p.ground;p.landPulse=Math.max(0,(p.landPulse||0)-dt*5);p.launchPulse=Math.max(0,(p.launchPulse||0)-dt*7);const jumpPressed=Boolean(input.jump)&&!s.jumpHeld;s.jumpHeld=Boolean(input.jump);
+ if(s.dead||s.won)return;s.t+=dt;const p=s.p,l=s.level,wasGrounded=p.ground;p.landPulse=Math.max(0,(p.landPulse||0)-dt*5);p.launchPulse=Math.max(0,(p.launchPulse||0)-dt*7);const jumpPressed=Boolean(input.jump)&&!s.jumpHeld;s.jumpHeld=Boolean(input.jump);
  for(const b of l.platforms){const px=b.x,py=b.y;
   if(b.type==='move'||b.type==='diagonal')b.x=b.baseX+Math.sin(s.t*1.1+b.phase)*b.ampX;
   if(b.type==='lift'||b.type==='diagonal')b.y=b.baseY+Math.sin(s.t*1.3+b.phase)*b.ampY;
   if(b.type==='reactive'){if(b.triggerTime>=0){b.x=b.baseX+Math.sin((s.t-b.triggerTime)*1.5)*b.ampX;b.y=b.baseY+Math.sin((s.t-b.triggerTime)*1.1)*b.ampY;}}
-  if(b.type==='fake'&&!b.reveal&&p.ground&&l.platforms[p.on]===b){b.reveal=true;b.triggerTime=s.t;}
-  if(b.type==='fake'&&b.reveal){const elapsed=s.t-b.triggerTime;b.active=elapsed<.5;b.y=b.baseY+Math.min(170,Math.max(0,elapsed-.3)*180);if(elapsed>3.5){b.reveal=false;b.active=true;b.y=b.baseY;}}
+  if(b.type==='fake'&&!b.reveal&&Math.abs(p.x+p.w/2-b.x-b.w/2)<b.w/2+45&&Math.abs(p.y+p.h-b.y)<130){b.reveal=true;b.triggerTime=s.t;}
+  if(b.type==='fake'&&b.reveal)b.y=b.baseY+18*Math.min(1,(s.t-b.triggerTime)/.5);
   if(b.type==='crumble'&&b.timer>=0){b.timer+=dt;b.active=b.timer<(l.n<20?.48:.34);if(b.timer>2.4){b.timer=-1;b.active=true;}}
   if(b.type==='blink'){const phase=(s.t+b.phase)%3.8;b.active=phase<2.9;b.blink=phase>2.45&&b.active;}
   b.dx=b.x-px;b.dy=b.y-py;
  }
  for(const v of l.training){const b=l.platforms[v.platform];v.x=b.x+b.w/2+Math.sin(s.t*1.1+v.phase)*(b.w/2-30);v.y=b.y-v.r;}
  for(const h of l.hazards){const b=l.platforms[h.platform];
-  if(h.type==='crusher'){const q=(s.t+h.phase)%h.period;h.warning=q>2.3&&q<3;const f=q<3?0:q<3.5?(q-3)/.5:q<4.2?1:Math.max(0,1-(q-4.2)/.8);h.x=b.x+h.offsetX;h.y=b.y-230+f*170;}
-  if(h.type==='boulder'){h.x=b.x+b.w/2+Math.sin(s.t*h.speed+h.phase)*h.amp;h.y=b.y-h.r;}
-  if(h.type==='saw'||h.type==='pendulum'){
-   const t=s.t*(h.speed||1)+h.phase,center=b.x+b.w/2;
-   h.anchorX=center;h.anchorY=b.y-(h.length||150);
-   if(h.motion==='circular'){h.anchorY=b.y-65;h.x=center+Math.cos(t)*h.amp;h.y=h.anchorY+Math.sin(t)*h.amp;}
-   else if(h.motion==='vertical'){h.x=center;h.y=b.y-65+Math.sin(t)*h.amp;}
-   else if(h.motion==='pendulum'||h.type==='pendulum'){const a=Math.sin(t)*(h.arc||.75);h.x=center+Math.sin(a)*(h.length||150);h.y=h.anchorY+Math.cos(a)*(h.length||150)-20;}
-   else{h.x=center+(h.motion==='static'?0:Math.sin(t)*h.amp);h.y=b.y-(h.rail?10:55);}
-  }
-
+  if(h.type==='saw'){h.x=b.x+b.w/2+Math.sin(s.t*(h.speed||1)+h.phase)*h.amp;h.y=b.y-10;}
+  if(h.type==='pendulum'){const a=Math.sin(s.t*1.4+h.phase)*.8;h.x=b.x+b.w*.6+Math.sin(a)*h.amp;h.y=b.y-150+Math.cos(a)*h.amp;}
   if(h.type==='jaw'||h.type==='fire'){h.x=b.x+h.offsetX;h.y=b.y;const q=(s.t+h.phase)%h.period,on=h.type==='fire'?2.5:2.3;h.warning=q>=on-.7&&q<on;h.active=b.active&&q>=on&&q<on+(h.type==='fire'?1.1:.6);h.cycle=q;}
   if(h.type==='spikes'){h.x=b.x+h.offsetX;h.y=b.y;h.inactive=!b.active;const phase=(s.t+h.platform*.43)%3.2;h.retracted=h.pulse&&phase<1.6;h.pulseWarning=h.pulse&&phase>1.25&&phase<1.6;if(h.hidden&&!h.triggered&&Math.abs(p.x+p.w/2-h.x-h.w/2)<80&&Math.abs(p.y+p.h-h.y)<120){h.triggered=true;h.warning=.55;}h.warning=Math.max(0,h.warning-dt);}
  }
  for(const m of l.machines){const b=l.platforms[m.platform];
-  if(m.type==='laser'){m.x=b.x+b.w*.54;m.y=b.y-m.h;const q=(s.t+m.phase)%3.8;m.active=q>=2.35&&q<3.45;m.warning=q>=2.05&&q<2.35;}
-  else{m.x=b.x+b.w-18;m.y=b.y-31;const phase=(s.t+m.phase)%m.period;m.warning=phase>m.period-.7;const shot=Math.floor((s.t+m.phase)/m.period);if(shot>m.last){m.last=shot;if(s.t>1){const vertical=m.direction==='vertical';s.rockets.push({x:m.x-25,y:m.y+6,w:vertical?10:22,h:vertical?22:10,dir:-1,vx:vertical?0:-105,vy:vertical?-130:0,speed:105,life:3.4});}}}
+  if(m.type==='laser'){m.x=b.x+b.w*.54;m.y=b.y-88;const q=(s.t+m.phase)%3.8;m.active=q>=2.35&&q<3.45;m.warning=q>=2.05&&q<2.35;}
+  else{m.x=b.x+b.w-18;m.y=b.y-31;const shot=Math.floor((s.t+m.phase)/m.period);if(shot>m.last){m.last=shot;if(s.t>1)s.rockets.push({x:m.x-10,y:m.y+6,w:22,h:10,dir:-1,speed:85,life:3.1});}}
  }
- s.rockets.forEach(r=>{r.x+=(r.vx??r.dir*r.speed)*dt;r.y+=(r.vy||0)*dt;r.life-=dt;});s.rockets=s.rockets.filter(r=>r.life>0);
+ s.rockets.forEach(r=>{r.x+=r.dir*r.speed*dt;r.life-=dt;});s.rockets=s.rockets.filter(r=>r.life>0);
  const frameX=p.x,frameY=p.y;
  if(p.ground&&p.on>=0&&l.platforms[p.on]&&l.platforms[p.on].active){p.x+=l.platforms[p.on].dx;p.y+=l.platforms[p.on].dy;}
  p.coyote-=dt;p.jumpBuffer-=dt;if(p.ground)p.coyote=.13;if(jumpPressed)p.jumpBuffer=.18;
  if(p.jumpBuffer>0&&p.coyote>0){p.vy=-JUMP;p.ground=false;p.jumpBuffer=0;p.coyote=0;p.launchPulse=1;s.jumped=true;}
- s.boostTime=Math.max(0,s.boostTime-dt);const target=((input.right?SPEED:0)-(input.left?SPEED:0))*(s.reversed?-1:1),desired=s.boostTime?target+s.boostDir*100:target,turning=desired&&p.vx&&Math.sign(desired)!==Math.sign(p.vx),accel=turning?4500:desired?(p.ground?2800:2100):(p.ground?(l.platforms[p.on]?.surface==='ice'?450:4000):2300);p.vx+=Math.max(-accel*dt,Math.min(accel*dt,desired-p.vx));if(!desired&&Math.abs(p.vx)<3)p.vx=0;if(p.vx)p.face=Math.sign(p.vx);p.runPhase=(p.runPhase||0)+Math.abs(p.vx)*dt*.05;p.lean=(p.lean||0)+((p.vx/SPEED)*.085-(p.lean||0))*Math.min(1,dt*15);
- if(p.ground&&l.platforms[p.on]?.surface==='conveyor')p.x+=45*dt;
+ s.boostTime=Math.max(0,s.boostTime-dt);const target=((input.right?SPEED:0)-(input.left?SPEED:0))*(s.reversed?-1:1),desired=s.boostTime?target+s.boostDir*100:target,turning=desired&&p.vx&&Math.sign(desired)!==Math.sign(p.vx),accel=turning?4500:desired?(p.ground?2800:2100):(p.ground?4000:2300);p.vx+=Math.max(-accel*dt,Math.min(accel*dt,desired-p.vx));if(!desired&&Math.abs(p.vx)<3)p.vx=0;if(p.vx)p.face=Math.sign(p.vx);p.runPhase=(p.runPhase||0)+Math.abs(p.vx)*dt*.05;p.lean=(p.lean||0)+((p.vx/SPEED)*.085-(p.lean||0))*Math.min(1,dt*15);
  const oldX=p.x,oldY=p.y;p.x=Math.max(0,p.x+p.vx*dt);
  for(const b of l.platforms)if(b.active&&overlap(p,b)){const previousX=b.x-b.dx,relativeX=p.x-frameX-b.dx;if(relativeX>0&&frameX+p.w<=previousX+1){p.x=b.x-p.w;p.vx=0;}else if(relativeX<0&&frameX>=previousX+b.w-1){p.x=b.x+b.w;p.vx=0;}}
  p.vy=Math.min(950,p.vy+GRAVITY*dt);const impactSpeed=p.vy;p.y+=p.vy*dt;p.ground=false;p.on=-1;
@@ -163,13 +150,11 @@ function step(s,input,dt){
  for(const v of l.springs){const b=l.platforms[v.platform];v.x=b.x+b.w*(v.offsetRatio||.62);v.y=b.y;v.timer=Math.max(0,v.timer-dt);const near=p.x+p.w>v.x-22&&p.x<v.x+22,cap=b.y-(v.capHeight||32),landed=p.vy>=0&&oldY+p.h<=cap+3&&p.y+p.h>=cap;
   if(b.active&&v.timer===0&&near&&(landed||(p.ground&&p.on===v.platform))){p.y=Math.min(p.y,cap-p.h);p.vy=-v.power;p.ground=false;p.on=-1;p.coyote=0;p.jumpBuffer=0;s.boostDir=v.dir;s.boostTime=.28;v.timer=.32;s.sprung=true;s.springTier=v.tier||0;}}
  for(const e of l.enemies){if(!e.alive){e.defeatedTimer=Math.max(0,(e.defeatedTimer||0)-dt);continue;}const b=l.platforms[e.platform],left=b.x+14,right=b.x+b.w-e.w-14;e.x+=e.dir*e.speed*dt;if(e.x<left){e.x=left;e.dir=1;}if(e.x>right){e.x=right;e.dir=-1;}e.y=b.y-e.h;if(overlap(p,e)){if(p.vy>=0&&oldY+p.h<=e.y+10){e.alive=false;e.defeatedTimer=.5;p.y=e.y-p.h;p.vy=-300;p.ground=false;s.stomped=true;}else s.dead=true;}}
- for(const h of l.hazards){if(h.false)continue;if(h.type==='crusher'){if(overlap(p,h))s.dead=true;}else if(h.type==='spikes'){if(h.inactive||h.retracted||h.hidden&&(!h.triggered||h.warning>0))continue;if(overlap(p,{x:h.x+3,y:h.y-22,w:h.w-6,h:22}))s.dead=true;}else if(h.type==='jaw'||h.type==='fire'){if(h.active&&overlap(p,{x:h.x+5,y:h.y-(h.type==='fire'?240:25),w:h.w-10,h:h.type==='fire'?240:25}))s.dead=true;}else if(circleHit(p,h))s.dead=true;}
+ for(const h of l.hazards){if(h.false)continue;if(h.type==='spikes'){if(h.inactive||h.retracted||h.hidden&&(!h.triggered||h.warning>0))continue;if(overlap(p,{x:h.x+3,y:h.y-22,w:h.w-6,h:22}))s.dead=true;}else if(h.type==='jaw'||h.type==='fire'){if(h.active&&overlap(p,{x:h.x+5,y:h.y-(h.type==='fire'?70:25),w:h.w-10,h:h.type==='fire'?70:25}))s.dead=true;}else if(circleHit(p,h))s.dead=true;}
  for(const m of l.machines)if(m.type==='laser'&&m.active&&overlap(p,m))s.dead=true;
  for(const r of s.rockets)if(overlap(p,r))s.dead=true;
  updatePursuits(s,dt,oldY);
- const pad=p.ground&&l.pads.includes(p.on)?p.on:-1;
- if(pad>=0&&s.padContact!==pad){s.gravity*=-1;s.flipped=true;s.flippedPads.push(pad);}s.padContact=pad;
- for(const zone of l.controlZones||[])if(p.ground&&p.on===zone.platform&&!s.reverseZonesUsed.includes(zone.platform)){s.reverseZonesUsed.push(zone.platform);s.reversed=true;s.reverseUntil=s.t+zone.duration;s.message='CONTROLES INVERTIDOS!';}
+ if(p.ground&&l.pads.includes(p.on)&&!s.flippedPads.includes(p.on)){s.flippedPads.push(p.on);s.gravity*=-1;s.flipped=true;}
  for(const k of l.keys){const b=l.platforms[k.platform];k.x=b.x+b.w/2;k.y=b.y-30;if(!k.got&&overlap(p,{x:k.x-14,y:k.y-14,w:28,h:28})){k.got=true;s.picked=true;}}
  if(p.y>l.maxY+180)s.dead=true;
  if(!s.dead)l.checkpoints.forEach((c,i)=>{if(p.ground&&p.on===c.platform&&i>s.checkpoint){s.checkpoint=i;l.checkpoints.forEach((v,j)=>v.active=j<=i);s.checkpointChanged=true;}});

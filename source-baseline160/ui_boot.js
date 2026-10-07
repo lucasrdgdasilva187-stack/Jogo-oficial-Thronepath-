@@ -1,5 +1,5 @@
 window.THRONEPATH_ANDROID=Boolean(window.THRONEPATH_ANDROID||navigator.userAgent.includes('ThronepathAndroid'));
-const GAME_VERSION='1.6.0';
+const GAME_VERSION='1.5.2';
 const touchBindings=new Map();
 const heldKeys=new Set();let sceneDirty=true;
 function freshButtonLayout(){return{left:{x:.075,y:.82,size:64},right:{x:.19,y:.82,size:64},jump:{x:.92,y:.82,size:64}};}
@@ -9,11 +9,11 @@ function freshSettings(){return{...defaults,buttons:freshButtonLayout()};}
 let settings=freshSettings(),metrics={jumps:0,kills:0,deaths:falls,seconds:0,streak:0,wins:0,clean:0,lateClean:0,springUses:0,softSprings:0,mediumSprings:0,strongSprings:0,movingRides:0,crumbleEscapes:0,gravityFlips:0,keysCollected:0,hazardsPassed:0,pursuitEscapes:0,maxStreak:0,tutorialWatched:0},awards=[],phaseDeaths=0,toastTimer=0,lastStatsSave=0,endingTime=0,endingStartX=0;
 try{const prefs=JSON.parse(localStorage.getItem('thronepath-settings-v1')||'{}');for(const k of Object.keys(defaults))if(typeof prefs[k]===typeof defaults[k])settings[k]=prefs[k];const record=JSON.parse(localStorage.getItem('porta2d-v1')||'{}');for(const k of Object.keys(metrics))if(Number.isFinite(record.metrics&&record.metrics[k]))metrics[k]=Math.max(0,record.metrics[k]);awards=Array.isArray(record.awards)?record.awards.filter(v=>Number.isInteger(v)&&v>=1&&v<=150):[];}catch{}
 try{const stored=JSON.parse(localStorage.getItem('thronepath-settings-v1')||'{}');settings.buttons=normalizeButtons(stored.buttons);const b=settings.buttons;if((stored.layoutRevision||0)<4&&b.left.y===.82&&b.right.y===.82&&b.jump.y===.76)b.jump.y=.82;}catch{settings.buttons=freshButtonLayout();}
-try{const old=JSON.parse(localStorage.getItem('thronepath-settings-v1')||'{}');if(!old.hudRevision){settings.compact=true;settings.showTime=false;}}catch{}settings.hudRevision=1;settings.layoutRevision=4;if(!['low','medium','high'].includes(settings.quality))settings.quality='low';
+try{const old=JSON.parse(localStorage.getItem('thronepath-settings-v1')||'{}');if(!old.hudRevision){settings.compact=true;settings.showTime=false;}}catch{}settings.hudRevision=1;settings.layoutRevision=4;if(!['soft','high'].includes(settings.quality))settings.quality='soft';
 for(const k of ['master','music','effects'])settings[k]=Math.max(0,Math.min(100,settings[k]));
-settings.hud=Math.max(80,Math.min(120,settings.hud));settings.control=Math.max(52,Math.min(96,settings.control));settings.gap=Math.max(16,Math.min(50,settings.gap));settings.lift=Math.max(12,Math.min(65,settings.lift));settings.side=Math.max(12,Math.min(70,settings.side));if(!['low','medium','high'].includes(settings.quality))settings.quality='low';
+settings.hud=Math.max(80,Math.min(120,settings.hud));settings.control=Math.max(52,Math.min(96,settings.control));settings.gap=Math.max(16,Math.min(50,settings.gap));settings.lift=Math.max(12,Math.min(65,settings.lift));settings.side=Math.max(12,Math.min(70,settings.side));if(!['soft','high'].includes(settings.quality))settings.quality='soft';
 muted=settings.mute;
-const QUALITY_PROFILES={low:{detail:0,backgroundWidth:640,scale:.8,smooth:true,pixelBudget:550000},medium:{detail:1,backgroundWidth:1280,scale:1,smooth:true,pixelBudget:950000},high:{detail:2,backgroundWidth:2048,scale:1.4,smooth:true,pixelBudget:1900000}};
+const QUALITY_PROFILES={soft:{detail:1,backgroundWidth:1440,scale:.9,smooth:true,pixelBudget:850000},high:{detail:2,backgroundWidth:1920,scale:1.15,smooth:true,pixelBudget:1600000}};
 function qualityProfile(){return QUALITY_PROFILES[settings.quality]||QUALITY_PROFILES.high;}
 function qualityDpr(){const profile=qualityProfile(),pixels=Math.max(1,innerWidth*innerHeight);return Math.min(profile.scale,Math.sqrt(profile.pixelBudget/pixels));}
 function controlLayout(){

@@ -1,1 +1,1 @@
-{"name":"thronepath-html","version":"1.5.2","private":true,"devDependencies":{"@napi-rs/canvas":"0.1.100"}}
+{"name":"thronepath-html","version":"1.6.0","private":true,"devDependencies":{"@napi-rs/canvas":"0.1.100","playwright":"1.62.1"}}

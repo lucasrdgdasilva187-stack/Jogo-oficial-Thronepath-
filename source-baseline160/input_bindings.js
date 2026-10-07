@@ -16,19 +16,3 @@ for(const button of document.querySelectorAll('[data-control]')){
  const release=e=>{pointers.delete(e.pointerId);syncControl(button.dataset.control);if(!pointers.size)button.classList.remove('pressed');};
  for(const event of ['pointerup','pointercancel','lostpointercapture'])button.addEventListener(event,release);
 }
-
-// Device adapters produce actions. Gameplay inversion is applied once in E.step.
-let padJumpHeld=false,padPauseHeld=false;
-function readActions(){
- let left=input.left,right=input.right,jump=queuedJump;
- const pads=typeof navigator.getGamepads==='function'?navigator.getGamepads():[];
- const pad=Array.from(pads||[]).find(p=>p&&p.connected!==false);
- const pressed=i=>Boolean(pad?.buttons?.[i]?.pressed);
- const axis=pad?.axes?.[0]||0,padJump=pressed(0),pause=pressed(9);
- left=left||axis<-.24||pressed(14);right=right||axis>.24||pressed(15);
- if(padJump&&!padJumpHeld)jump=true;
- if(pause&&!padPauseHeld){if(mode==='play')window.pauseGame();else if(mode==='pause'&&!$('menuPanel').hidden)play();}if(padJump&&!padJumpHeld&&mode!=='play'&&!$('menuPanel').hidden)play();
- padJumpHeld=padJump;padPauseHeld=pause;
- return{left,right,jump};
-}
-window.addEventListener('gamepaddisconnected',()=>{padJumpHeld=false;padPauseHeld=false;clearInputs();});

@@ -1,0 +1,23 @@
+/* Lightweight touch controls: identical geometry in game and editor. */
+#controls button,#controls button.jump,#controlEditArea button,.controlPreview span{
+ border:1.5px solid #b7d1dbb8;border-bottom:3px solid #5c7d91;border-radius:19px;
+ background:linear-gradient(155deg,#254859e8,#102b3de8);color:#fff7df;
+ box-shadow:inset 0 1px 0 #ffffff38,inset 0 -3px 7px #081a3030,0 3px 7px #071d3540;
+ transition:background 80ms,border-color 80ms,box-shadow 80ms;
+}
+#controls button::before,#controlEditArea button::before,.controlPreview i{
+ background:#fff6dd;clip-path:polygon(28% 13%,82% 50%,28% 87%,35% 50%);
+}
+#controls button.pressed,#controlEditArea button:active{
+ background:linear-gradient(155deg,#50788aee,#24465cee);border-color:#f6db9d;
+ box-shadow:inset 0 2px 5px #061d3a65,0 1px 3px #071d3530;
+}
+
+/* Center icons independently of padding and old button styles. */
+#controls button,#controlEditArea button{display:flex;align-items:center;justify-content:center;padding:0!important;box-sizing:border-box;line-height:1;font-size:0}
+#controls button::before,#controlEditArea button::before,.controlPreview i{margin:0;flex:none;width:36%;height:36%;clip-path:polygon(18% 12%,37% 12%,82% 50%,37% 88%,18% 88%,63% 50%);transform-origin:50% 50%}
+#controls button[data-control="left"]::before,#edit-left::before{transform:rotate(180deg)}
+#controls button[data-control="right"]::before,#edit-right::before{transform:none}
+#controls button[data-control="jump"]::before,#edit-jump::before{transform:rotate(-90deg)}
+.compactHud #audio,.compactHud #retry,.compactHud #hudOptions,.compactHud #timeHud,.compactHud #deaths{display:none!important}
+.compactHud #pause{display:flex;align-items:center;justify-content:center;width:40px;height:40px;font-size:22px;padding:0}

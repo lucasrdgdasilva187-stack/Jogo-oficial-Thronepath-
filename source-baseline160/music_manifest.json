@@ -1,0 +1,20 @@
+{
+  "tracks": [
+    {
+      "name": "music_piano",
+      "uploadedName": "Sweden (Piano) - Cozy Keys.mp3",
+      "path": "Audio/music_piano.mp3",
+      "durationSeconds": 145.684898,
+      "processing": "loudness normalization -18 LUFS, peak -1.5 dBTP, edge fades",
+      "copyrightStatus": "Supplied recording; processing does not remove pre-existing rights."
+    },
+    {
+      "name": "music_underground",
+      "uploadedName": "Under the Earth, Theme of the Underground - Terraria Calamity Mod (Lofi) - Inert.mp3",
+      "path": "Audio/music_underground.mp3",
+      "durationSeconds": 142.654694,
+      "processing": "loudness normalization -18 LUFS, peak -1.5 dBTP, edge fades",
+      "copyrightStatus": "Supplied recording; processing does not remove pre-existing rights."
+    }
+  ]
+}

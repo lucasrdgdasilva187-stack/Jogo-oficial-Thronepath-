@@ -14,7 +14,7 @@ function updatePursuits(s,dt,oldY){
   if(!marker||!end||s.won||p.x>=end.x+end.w*.65){c.finished=true;c.active=false;continue;}
   if(!c.triggered){
    if(p.x<marker.x+marker.w*.5)continue;
-   c.triggered=true;s.message=c.type==='rocket'?'ALGO ESTÁ VINDO!':'CORRA!';c.warning=c.delay;c.platform=c.launchPlatform??Math.max(0,c.triggerPlatform-1);
+   c.triggered=true;c.warning=c.delay;c.platform=c.launchPlatform??Math.max(0,c.triggerPlatform-1);
    const b=l.platforms[c.platform];c.x=b.x+b.w*.55-c.w/2;c.y=b.y-c.h-(c.type==='rocket'?64:0);c.vx=c.type==='rocket'?c.speed:0;
   }
   if(c.warning>0){c.warning=Math.max(0,c.warning-dt);continue;}
