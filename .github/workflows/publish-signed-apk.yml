@@ -1,0 +1,43 @@
+name: Publicar APK assinado
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['release-dist/**', '.github/workflows/publish-signed-apk.yml']
+permissions:
+  contents: write
+concurrency:
+  group: thronepath-release
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reconstruir e conferir APK assinado
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json,zipfile
+          root=Path('release-dist'); meta=json.loads((root/'manifest.json').read_text())
+          data=b''.join(p.read_bytes() for p in sorted(root.glob('apk.*.part')))
+          assert len(data)==meta['bytes']
+          assert hashlib.sha256(data).hexdigest()==meta['sha256']
+          assert f"THRONEPATH_VERSION_CODE={meta['versionCode']}" in (root/'notes.md').read_text()
+          out=Path(meta['filename']);out.write_bytes(data)
+          with zipfile.ZipFile(out) as z:
+              assert z.testzip() is None
+              assert 'assets/index.html' in z.namelist()
+          print('APK assinado reconstruído e checksum conferido')
+          PY
+      - name: Publicar versão para o aviso do jogo
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION=$(python3 -c 'import json;print(json.load(open("release-dist/manifest.json"))["version"])')
+          APK=$(python3 -c 'import json;print(json.load(open("release-dist/manifest.json"))["filename"])')
+          if gh release view "$VERSION" > /dev/null 2>&1; then
+            echo 'Versão já publicada; não substituir arquivos existentes.'
+            exit 0
+          fi
+          gh release create "$VERSION" "$APK" --target "$GITHUB_SHA" --title "Thronepath $VERSION — Alpha" --notes-file release-dist/notes.md --latest
