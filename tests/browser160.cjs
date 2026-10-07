@@ -10,4 +10,4 @@ for(const size of [[844,390],[640,360],[1280,800]]){
  }
  assert.deepEqual(errors,[]);report.push({size,layout,errors});await page.close();
 }
-fs.writeFileSync(path.join(dir,'report.json'),JSON.stringify(report,null,2));await browser.close();console.log('Real Chromium: touch layouts, keyboard walk/jump, tutorial, all qualities passed');})().catch(e=>{console.error(e);process.exitCode=1});
+fs.writeFileSync(path.join(dir,'report.json'),JSON.stringify(report,null,2));await browser.close();console.log('Real Chromium: touch layouts, keyboard walk/jump, tutorial, all qualities passed');})().catch(e=>{console.error(e);process.exit(1)});

@@ -15,7 +15,7 @@
 
 /* Center icons independently of padding and old button styles. */
 #controls button,#controlEditArea button{display:flex;align-items:center;justify-content:center;padding:0!important;box-sizing:border-box;line-height:1;font-size:0}
-#controls button::before,#controlEditArea button::before,.controlPreview i{margin:0;flex:none;width:36%;height:36%;clip-path:polygon(18% 12%,37% 12%,82% 50%,37% 88%,18% 88%,63% 50%);transform-origin:50% 50%}
+#controls button::before,#controlEditArea button::before,.controlPreview i{margin:0;flex:none;width:36%;height:36%;clip-path:polygon(22% 10%,88% 50%,22% 90%);transform-origin:50% 50%}
 #controls button[data-control="left"]::before,#edit-left::before{transform:rotate(180deg)}
 #controls button[data-control="right"]::before,#edit-right::before{transform:none}
 #controls button[data-control="jump"]::before,#edit-jump::before{transform:rotate(-90deg)}

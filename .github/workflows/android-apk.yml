@@ -15,6 +15,7 @@ jobs:
         run: |
           python3 scripts/assemble-game.py
           python3 scripts/upgrade160.py
+          python3 scripts/package-android-web.py
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -31,11 +32,12 @@ jobs:
           node tests/control_alignment.cjs
           node tests/revision152.cjs
           node tests/revision160.cjs
+          node tests/background160.cjs
           node tests/review_regressions.cjs
       - name: Testar navegador e telas pequenas
         run: |
           npx playwright install --with-deps chromium
-          node tests/browser160.cjs
+          timeout 180 node tests/browser160.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:

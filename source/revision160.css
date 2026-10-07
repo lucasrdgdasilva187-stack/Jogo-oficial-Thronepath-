@@ -9,10 +9,14 @@
  #settingsPanel{padding:10px 16px!important;max-height:96dvh}
  #settingsPanel h2{font-size:22px;margin:0 0 5px}
  #settingsPanel .panelHeader{margin-bottom:4px}
- #tutorialCanvas{max-height:calc(100dvh - 158px)}
+ #tutorialCanvas{max-height:calc(100dvh - 200px)}
  .tutorialToolbar{margin-top:4px;gap:4px}
  .tutorialDots{gap:3px!important}
  .tutorialToolbar button{min-height:28px;min-width:28px;padding:3px 6px}
 }
 
 #tutorialCaption{font-size:clamp(11px,1.6vw,15px);line-height:1.3;margin:5px 0;color:#e5e6d7}
+
+#toast:not([hidden]){animation:mechanicNotice 3.2s ease both}@keyframes mechanicNotice{0%{opacity:0}9%,82%{opacity:1}100%{opacity:0}}
+
+body.tutorialOpen .settingsBody{max-height:none!important;overflow:visible!important}

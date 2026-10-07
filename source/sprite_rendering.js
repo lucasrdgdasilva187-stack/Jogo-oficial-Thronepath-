@@ -1,5 +1,11 @@
+let lowHeroSurface=null;
 function paintAdventurer(g,p,time,options={}){
  const detail=options.detail??qualityProfile().detail,seated=Boolean(options.seated),running=p.ground&&Math.abs(p.vx||0)>30&&!seated,jumping=!p.ground&&!seated,stride=running?Math.sin(p.runPhase??time*14)*Math.min(1,Math.abs(p.vx||0)/240):0;
+ if(detail===0){
+  if(!lowHeroSurface){lowHeroSurface=document.createElement('canvas');lowHeroSurface.width=32;lowHeroSurface.height=40;}
+  const low=lowHeroSurface.getContext('2d');low.setTransform(1,0,0,1,0,0);low.clearRect(0,0,32,40);low.scale(.5,.5);
+  paintAdventurer(low,{...p,x:17,y:12},time,{...options,detail:1});g.save();g.imageSmoothingEnabled=false;g.drawImage(lowHeroSurface,p.x+p.w/2-32,p.y-12,64,80);g.restore();return;
+ }
  const {rr,line,polygon,ellipse}=canvasBrush(g);g.save();g.translate(Math.round(p.x+p.w/2),Math.round(p.y));g.scale(p.face||1,1);const landing=p.landPulse||0,launch=p.launchPulse||0;if(!seated){g.translate(0,50);g.rotate((p.lean||0)*.65*(p.face||1));g.scale(1+landing*.06-launch*.03,1-landing*.06+launch*.035);g.translate(0,-50);if(p.ground)g.translate(0,running?-Math.abs(stride)*1.2:Math.sin(time*2.2)*.45);}
  ellipse(0,51,14,seated?1.3:2.1,'#14292f32');
 

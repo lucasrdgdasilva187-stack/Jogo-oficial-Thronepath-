@@ -3,7 +3,8 @@ import re,base64,json
 project=Path(__file__).resolve().parents[1]
 s=(project/'web/index.html').read_text()
 # Exact replacements retain all embedded assets and existing systems.
-for p in (project/'source-baseline160').glob('*.js'):
+for p in (project/'source-baseline160').iterdir():
+ if p.suffix not in ['.js','.css']:continue
  before=p.read_text().strip()
  after=(project/'source'/p.name).read_text().strip()
  if p.name=='ui_features.js':
@@ -22,12 +23,13 @@ s=s.replace('recordCourseActions(state,previousSupport);','recordCourseActions(s
 s=s.replace("a.push('↑ Gravidade')","a.push('↕ GRAVIDADE INVERTIDA')").replace("a.push('⇄ Invertido')","a.push('↔ CONTROLES INVERTIDOS')")
 s=s.replace("if(state.flipped){state.flipped=false;", "if(state.flipped){notifyGame(state.gravity<0?'GRAVIDADE INVERTIDA!':'GRAVIDADE NORMAL');state.flipped=false;")
 s=s.replace('<option value="soft">Suave — cenário ilustrado e leve</option><option value="high">Alta — cenário e texturas detalhados</option>','<option value="low">Baixa — leve e simplificada</option><option value="medium">Média — clima e detalhes equilibrados</option><option value="high">Alta / Ultra — efeitos e profundidade</option>')
+s=s.replace('<body>','<body class="homeScreen">',1)
 s=s.replace('v1.5.2','v1.6.0').replace('1.5.2-alpha','1.6.0-alpha')
 s=s.replace('<div class="tutorialToolbar">','<p id="tutorialCaption">Ande com ← →, A/D ou direcional do controle.</p><div class="tutorialToolbar">',1)
 s=s.replace('</style>',(project/'source/revision160.css').read_text()+'\n</style>',1)
 s=s.replace('function background(){paintBackdrop', 'function background(){paintBackdrop')
 s=s.replace('state.level.training.forEach(drawTraining);','state.level.training.forEach(drawTraining);drawControlZones();')
-s=s.replace('drawHero();drawStoryIntro();','drawHero();drawStoryIntro();')
+s=s.replace("$('effect').textContent=a.join(' · ');$('effect').hidden=!a.length;","const text=a.join(' · ');if($('effect').textContent!==text)$('effect').textContent=text;if($('effect').hidden!==!a.length)$('effect').hidden=!a.length;")
 village=project/'art/village_revision160.jpg'
 if village.exists():
  s,count=re.subn(r'"village"\s*:\s*"data:image/[^"]+"','"village":'+json.dumps('data:image/jpeg;base64,'+base64.b64encode(village.read_bytes()).decode()),s)
