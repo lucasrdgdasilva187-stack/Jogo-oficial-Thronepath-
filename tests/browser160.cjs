@@ -1,7 +1,7 @@
 const {chromium}=require('playwright'),assert=require('assert'),fs=require('fs'),path=require('path');
 (async()=>{const browser=await chromium.launch({headless:true,args:['--no-sandbox']});const dir=path.resolve(__dirname,'../previews/browser160');fs.mkdirSync(dir,{recursive:true});const report=[];
 for(const size of [[844,390],[640,360],[1280,800]]){
- const page=await browser.newPage({viewport:{width:size[0],height:size[1]},hasTouch:true});const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto('file://'+path.resolve(__dirname,'../web/index.html'));await page.waitForTimeout(600);
+ const page=await browser.newPage({viewport:{width:size[0],height:size[1]},hasTouch:true});const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto('file://'+path.resolve(__dirname,process.env.THRONEPATH_PACKAGED?'../android-web/index.html':'../web/index.html'));await page.waitForTimeout(600);await page.evaluate(()=>Promise.all([...backgrounds,...Object.values(polishedBackgrounds)].map(i=>i.decode())));
  await page.locator('#play').click();await page.keyboard.down('ArrowRight');await page.waitForTimeout(350);await page.keyboard.press('Space');await page.waitForTimeout(200);await page.keyboard.up('ArrowRight');assert(await page.evaluate(()=>state.p.x>55));
  await page.evaluate(()=>{goHome();$('openTutorial').click()});await page.waitForTimeout(150);
  const layout=await page.evaluate(()=>{const c=$('tutorialCanvas').getBoundingClientRect(),n=$('tutorialNext').getBoundingClientRect();return {top:c.top,bottom:n.bottom,height:innerHeight,width:c.width}});await page.screenshot({path:path.join(dir,`tutorial-${size[0]}.png`)});assert(layout.top>=0&&layout.bottom<=size[1]+1,JSON.stringify(layout));
