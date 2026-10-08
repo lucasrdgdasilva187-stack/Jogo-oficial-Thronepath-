@@ -26,5 +26,15 @@ function softBackdrop(biome){
  if(biome===0||biome===7){for(let i=0;i<18;i++){const x=i*83,y=735+(i%3)*20;line(x,y,x-12,y-22,'#426c60',3);line(x,y-8,x+13,y-25,'#426c60',3);ellipse(x-13,y-22,9,4,'#7d9c68');ellipse(x+13,y-25,9,4,'#7d9c68');}if(biome===7){for(let i=0;i<8;i++)line(i*175,756+i%3*12,i*175+90,756+i%3*12,'#a3c7bc',3);}}
  if(biome===6){for(let i=0;i<8;i++){const x=i*190+22,y=520+(i%3)*24;rr(x,y-68,15,55,1,'#827969');rr(x-3,y-72,21,6,1,'#c4b397');for(let k=0;k<5;k++)line(x+10+k*22,y-23+k*9,x+39+k*18,y-23+k*9,'#b6a179',2);}}
  if(biome===3){for(let i=0;i<12;i++){const x=i*127;ellipse(x,776,45,14,'#406982');ellipse(x-2,768,42,11,'#dbeef0');}}
+ // Foreground detail remains static and cached on weak devices.
+ if(![5,8].includes(biome)){
+  for(let i=0;i<7;i++){const x=(i*241+45)%1440,y=65+(i%3)*48;ellipse(x,y,49,14,'#ffffff48');ellipse(x+26,y-7,32,18,'#ffffff48');}
+  for(let i=0;i<35;i++){const x=i*43,y=755+(i%4)*12;
+   if(biome===1){ellipse(x,y,12,4,'#be8d58');line(x-15,y+8,x+21,y+8,'#f0cc89',1);}
+   else if(biome===3){ellipse(x,y,16,5,'#e3f3f5');}
+   else{line(x,y,x+3,y-12,'#56765a',2);if(i%3===0){ellipse(x+3,y-13,3,3,'#e1d68f');}}
+  }
+ }
  softScenes.set(biome,c);return c;
 }
+

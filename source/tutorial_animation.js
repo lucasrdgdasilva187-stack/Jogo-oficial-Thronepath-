@@ -1,4 +1,5 @@
 const TUTORIAL_STEPS=8;
+const TUTORIAL_NAMES=['Andar','Pular','Plataformas móveis','Plataformas frágeis','Inimigos','Barreiras','Checkpoints','Chaves e porta'];
 let tutorialStep=0,tutorialTime=0,tutorialPaused=false,tutorialState=null,tutorialInput={};
 function demoBlock(x,y,w,type='solid'){return{x,y,w,h:45,type,baseX:x,baseY:y,timer:-1,triggerTime:-1,active:true,phase:0,ampX:type==='move'?70:0,ampY:0,dx:0,dy:0};}
 function makeTutorialScene(step){
@@ -7,17 +8,17 @@ function makeTutorialScene(step){
  if(step===2){l.platforms=[demoBlock(35,310,230),demoBlock(355,300,220,'move'),demoBlock(655,280,260)];s.p.x=385;s.p.y=250;s.p.on=1;}
  if(step===3){l.platforms=[demoBlock(40,310,260,'crumble'),demoBlock(380,285,470)];l.platforms[0].timer=0;s.p.x=235;}
  if(step===4){s.p.x=290;l.enemies=[{platform:0,kind:'mushroom',x:480,y:284,w:32,h:26,alive:true,defeatedTimer:0,dir:1,speed:22,phase:0}];}
- if(step===5){s.p.x=360;l.machines=[{type:'laser',platform:0,x:504,y:222,w:6,h:88,phase:2.5,active:true,warning:false}];}
+ if(step===5){s.p.x=360;l.machines=[{type:'laser',platform:0,x:504,y:20,w:6,h:290,phase:2.5,active:true,warning:false}];}
  if(step===6){l.platforms=[demoBlock(40,310,225),demoBlock(345,295,500)];l.checkpoints=[{platform:1,active:false,number:1}];}
  if(step===7){l.keys=[{platform:0,x:470,y:280,got:false}];l.door={x:807,y:216,w:56,h:94};}
  return s;
 }
 const TUTORIAL_CAPTIONS=['Ande com ← →, A/D ou direcional do controle.','Pule com ↑, espaço, botão na tela ou A do controle.','Espere a plataforma se aproximar antes de saltar.','A plataforma racha: avance antes que ela desapareça.','Caia sobre o topo do inimigo para derrotá-lo.','Observe a barreira e atravesse quando ela apagar.','Ative a bandeira: ela será seu ponto de retorno.','Pegue as chaves e alcance a porta.'];
-function setTutorialStep(n){tutorialStep=(n+TUTORIAL_STEPS)%TUTORIAL_STEPS;tutorialTime=0;$('tutorialCaption').textContent=TUTORIAL_CAPTIONS[tutorialStep];tutorialState=makeTutorialScene(tutorialStep);tutorialInput={};tutorialPaused=false;$('tutorialPlay').textContent='Ⅱ';$('tutorialPlay').setAttribute('aria-label','Pausar animação');for(let i=0;i<TUTORIAL_STEPS;i++)$('tutorialDot'+i).setAttribute('aria-current',String(i===tutorialStep));renderTutorial();}
+function setTutorialStep(n){tutorialStep=(n+TUTORIAL_STEPS)%TUTORIAL_STEPS;tutorialTime=0;if($('tutorialTopic'))$('tutorialTopic').value=String(tutorialStep);if($('tutorialStepLabel'))$('tutorialStepLabel').textContent=(tutorialStep+1)+' / '+TUTORIAL_STEPS+' · '+TUTORIAL_NAMES[tutorialStep];$('tutorialCaption').textContent=TUTORIAL_CAPTIONS[tutorialStep];tutorialState=makeTutorialScene(tutorialStep);tutorialInput={};tutorialPaused=false;$('tutorialPlay').textContent='Ⅱ';$('tutorialPlay').setAttribute('aria-label','Pausar animação');for(let i=0;i<TUTORIAL_STEPS;i++)$('tutorialDot'+i).setAttribute('aria-current',String(i===tutorialStep));renderTutorial();}
 function tutorialActive(){return !$('overlay').hidden&&!$('settingsPanel').hidden&&!$('tutorialSettings').hidden;}
 function tickTutorial(dt){
  if(!tutorialActive()||tutorialPaused)return;if(!tutorialState)tutorialState=makeTutorialScene(tutorialStep);tutorialTime+=dt;
- if(tutorialTime>=7){setTutorialStep(tutorialStep+1);return;}
+ if(tutorialTime>=7){setTutorialStep(tutorialStep);return;}
  const s=tutorialState,p=s.p,l=s.level;let left=false,right=false,jump=false;
  if(tutorialStep===0){right=tutorialTime<2.45;left=tutorialTime>3&&tutorialTime<5.5;}
  if([1,3,6].includes(tutorialStep)){right=p.x<745;const b=l.platforms[0];if(!s.demoJump&&p.ground&&p.x>=b.x+b.w-75){jump=true;s.demoJump=true;}}
@@ -45,3 +46,6 @@ function paintDemoWorld(g,s,time,step){
 }
 function renderTutorial(){const surface=$('tutorialCanvas');if(!surface||!tutorialActive())return;if(!tutorialState)tutorialState=makeTutorialScene(tutorialStep);const dpr=qualityProfile().scale;const w=Math.round(960*dpr),h=Math.round(400*dpr);if(surface.width!==w||surface.height!==h){surface.width=w;surface.height=h;}const g=surface.getContext('2d');g.setTransform(dpr,0,0,dpr,0,0);g.imageSmoothingEnabled=qualityProfile().smooth;paintDemoWorld(g,tutorialState,tutorialTime,tutorialStep);}
 $('tutorialPrev').onclick=()=>setTutorialStep(tutorialStep-1);$('tutorialNext').onclick=()=>setTutorialStep(tutorialStep+1);$('tutorialPlay').onclick=()=>{tutorialPaused=!tutorialPaused;$('tutorialPlay').textContent=tutorialPaused?'▶':'Ⅱ';$('tutorialPlay').setAttribute('aria-label',tutorialPaused?'Continuar animação':'Pausar animação');};for(let i=0;i<TUTORIAL_STEPS;i++)$('tutorialDot'+i).onclick=()=>setTutorialStep(i);
+
+
+if($('tutorialTopic'))$('tutorialTopic').onchange=()=>setTutorialStep(Number($('tutorialTopic').value));
