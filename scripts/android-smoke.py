@@ -28,6 +28,7 @@ def launch():
  adb('shell','am','start','-n',PACKAGE+'/.MainActivity');time.sleep(15);alive()
 def check(fresh):
  launch()
+ button('Got it',False)
  if not fresh:assert button('Continuar',False),'Installed update must show one-time release notes'
  else:assert not button('Continuar',False),'First install must not show release notes'
  button('Toque para começar');button('Jogar');time.sleep(4);alive()

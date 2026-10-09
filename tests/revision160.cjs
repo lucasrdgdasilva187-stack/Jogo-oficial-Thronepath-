@@ -16,3 +16,4 @@ test('Active laser catches a full jump; off interval is passable',()=>{const n=A
 test('Quality never changes the simulation',()=>{let expected;for(const q of ['low','medium','high']){r.run(`settings.quality='${q}';applySettings()`);const s=E.start(30);for(let i=0;i<120;i++)E.step(s,{right:true,jump:i===20},1/120);const result=JSON.stringify(s);if(expected)assert.equal(result,expected);expected=result;}});
 test('Temporary controls expire and restart clears all effects',()=>{const s=E.start(17),z=s.level.controlZones[0],b=s.level.platforms[z.platform];s.level.hazards=[];s.level.enemies=[];s.level.machines=[];s.level.springs=[];s.pursuits=[];Object.assign(s.p,{x:b.x+30,y:b.y-50,on:z.platform,ground:true});E.step(s,{},1/120);assert(s.reversed);assert.equal(s.message,'CONTROLES INVERTIDOS!');for(let f=0;f<1000;f++)E.step(s,{},1/120);assert(!s.reversed);assert.equal(E.start(17).gravity,1)});
 if(failures.length)process.exitCode=1;
+
