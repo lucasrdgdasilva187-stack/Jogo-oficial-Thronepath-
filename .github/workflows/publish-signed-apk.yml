@@ -41,7 +41,12 @@ jobs:
       - name: Preparar emulador Android
         run: |
           sdkmanager "platform-tools" "emulator" "build-tools;35.0.0" "system-images;android-35;google_apis;x86_64"
-          printf 'no\n' | avdmanager create avd --force -n thronepath -k "system-images;android-35;google_apis;x86_64" --device pixel_2
+          export ANDROID_AVD_HOME="$RUNNER_TEMP/thronepath-avds"
+          mkdir -p "$ANDROID_AVD_HOME"
+          printf 'no\n' | avdmanager create avd --force -n thronepath -k "system-images;android-35;google_apis;x86_64" --device pixel_2 --path "$ANDROID_AVD_HOME/thronepath.avd"
+          printf 'avd.ini.encoding=UTF-8\npath=%s\n' "$ANDROID_AVD_HOME/thronepath.avd" > "$ANDROID_AVD_HOME/thronepath.ini"
+          test -f "$ANDROID_AVD_HOME/thronepath.avd/config.ini"
+          "$ANDROID_HOME/emulator/emulator" -list-avds
           sudo chmod 666 /dev/kvm
           "$ANDROID_HOME/emulator/emulator" -avd thronepath -no-window -no-audio -no-boot-anim -no-snapshot -gpu software > /tmp/emulator.log 2>&1 &
           if ! timeout 120 adb wait-for-device; then cat /tmp/emulator.log; exit 1; fi
