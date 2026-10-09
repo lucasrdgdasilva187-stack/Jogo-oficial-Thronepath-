@@ -38,6 +38,7 @@ jobs:
           node tests/revision161.cjs
           node tests/pendulum163.cjs
           node tests/quality163.cjs
+          node tests/dynamics164.cjs
           node tests/update-notice.cjs
           node tests/background160.cjs
           node tests/review_regressions.cjs
@@ -61,6 +62,8 @@ jobs:
         run: |
           javac -d /tmp/update-tests app/src/main/java/com/lucasrodrigues/thronepath/UpdatePolicy.java tests/UpdatePolicyTest.java
           java -cp /tmp/update-tests UpdatePolicyTest
+          javac -d /tmp/update-tests app/src/main/java/com/lucasrodrigues/thronepath/InstallPolicy.java tests/InstallPolicyTest.java
+          java -cp /tmp/update-tests InstallPolicyTest
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.13'

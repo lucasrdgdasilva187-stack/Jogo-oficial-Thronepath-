@@ -26,11 +26,13 @@ public final class MainActivity extends Activity {
     private static final String GAME_URL = "https://appassets.androidplatform.net/assets/index.html";
     private WebView game;
     private boolean updateChecked;
+    private ApkUpdater updater;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        updater = new ApkUpdater(this);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         game = new WebView(this);
         game.setBackgroundColor(Color.rgb(20, 34, 45));
@@ -85,8 +87,7 @@ public final class MainActivity extends Activity {
                             .setTitle("Nova versão disponível!")
                             .setMessage("Thronepath " + version + " está disponível. Atualize para receber as melhorias.")
                             .setPositiveButton("Atualizar", (dialog, which) -> {
-                                try { startActivity(new android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(download))); }
-                                catch (android.content.ActivityNotFoundException e) { android.widget.Toast.makeText(MainActivity.this, "Abra o GitHub do jogo para baixar a atualização.", android.widget.Toast.LENGTH_LONG).show(); }
+                                updater.start(download);
                             })
                             .setNegativeButton("Depois", null).show();
                     }));
@@ -128,6 +129,7 @@ public final class MainActivity extends Activity {
 
     @Override
     protected void onPause() {
+        if (updater != null) updater.pause();
         if (game != null) {
             game.evaluateJavascript("window.ThronepathHost && window.ThronepathHost.suspend()", null);
             game.onPause();
@@ -139,6 +141,7 @@ public final class MainActivity extends Activity {
     protected void onResume() {
         super.onResume();
         if (game != null) game.onResume();
+        if (updater != null) updater.resume();
         immersive();
     }
 
@@ -166,8 +169,10 @@ public final class MainActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+        if (updater != null) updater.destroy();
         if (game != null) { game.destroy(); game = null; }
         super.onDestroy();
     }
 }
+
 

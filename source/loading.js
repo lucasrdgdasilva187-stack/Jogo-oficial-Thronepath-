@@ -2,7 +2,7 @@
 function startLoadingScreen(){
  const screen=$('loadingScreen'), artwork=$('loadingArtwork');
  if(!screen||!artwork||typeof artwork.addEventListener!=='function'||!document.images)return;
- artwork.src=$('menuArtwork').src;
+ artwork.src=polishedBackgrounds.castle_outside.src;
  const images=[...new Set([...backgrounds,...scenicSheets,worldAtlas,...Object.values(polishedBackgrounds),...document.images])];
  let completed=0,finished=false;
  function progress(){completed++;const percent=Math.round(completed/images.length*100);$('loadingBar').style.width=percent+'%';$('loadingProgress').setAttribute('aria-valuenow',String(percent));$('loadingStatus').textContent='Preparando seu caminho… '+percent+'%';}

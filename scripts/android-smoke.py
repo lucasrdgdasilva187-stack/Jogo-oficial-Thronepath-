@@ -16,7 +16,7 @@ def button(label,required=True):
  for attempt in range(8):
   alive();root=dump()
   for n in root.iter('node'):
-   if label in [n.get('text'),n.get('content-desc')]:
+   if any(label in (value or '') for value in [n.get('text'),n.get('content-desc')]):
     import re
     x1,y1,x2,y2=map(int,re.findall(r'\d+',n.get('bounds')))
     adb('shell','input','tap',str((x1+x2)//2),str((y1+y2)//2));time.sleep(2);return True
@@ -44,6 +44,8 @@ try:
  check(sys.argv[1]=='fresh')
 finally:
  mode=sys.argv[1]
+ try: Path('smoke-'+mode+'.xml').write_text(adb('shell','cat','/sdcard/window.xml'))
+ except Exception: pass
  Path('smoke-'+mode+'.log').write_text(adb('logcat','-d','-s','AndroidRuntime:E','chromium:E'))
  subprocess.run(['adb','shell','screencap','-p','/sdcard/smoke.png'])
  subprocess.run(['adb','pull','/sdcard/smoke.png','smoke-'+mode+'.png'])
