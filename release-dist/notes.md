@@ -1,7 +1,7 @@
-Thronepath v1.6.0 — versão Alpha para testes.
+Thronepath v1.6.3 — versão Alpha.
 
-Melhorias de câmera, gravidade, controles, armadilhas, gráficos e abertura. APK offline assinado com chave permanente. Android 7.0 ou superior.
+Corrige a abertura do aplicativo. Serras penduradas com corda de comprimento constante, ponto fixo sem colisão e movimento de ida e volta. Plataformas mais finas e efeitos mais visíveis na qualidade Alta. Mantém progresso, controles e checkpoints.
 
-THRONEPATH_VERSION_CODE=10
+APK offline assinado com a mesma chave da 1.6.0. Instale como atualização, sem desinstalar.
 
-Instalações antigas assinadas com outra chave não podem ser atualizadas no lugar. Não remova a instalação antiga antes de preservar seu progresso.
+THRONEPATH_VERSION_CODE=13

@@ -9,5 +9,5 @@ for(let n=0;n<8;n++){
  r.run(`setTutorialStep(${n})`);
  assert(r.elements.get('tutorialStepLabel').textContent.startsWith(`${n+1} / 8`));
 }
-assert.equal(r.run('GAME_VERSION'),'1.6.1');
+assert.equal(r.run('GAME_VERSION'),'1.6.3');
 console.log('Opening screen, tutorial topics and version passed');

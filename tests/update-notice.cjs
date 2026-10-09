@@ -1,0 +1,15 @@
+const assert=require('assert');
+const {createRuntime}=require('./runtime.cjs');
+const fresh=createRuntime({}, {entry:true});
+assert(fresh.elements.has('updateNotice'),'Must have an update notice');
+assert.equal(fresh.elements.get('updateNotice').hidden,true,'New install must not show update notice');
+fresh.run('dismissEntry()');
+assert.equal(fresh.elements.get('updateNotice').hidden,true);
+const upgraded=createRuntime({'porta2d-v1':JSON.stringify({unlocked:4,falls:12})},{entry:true});
+assert.equal(upgraded.elements.get('updateNotice').hidden,false,'Existing player receives notice');
+assert.equal(upgraded.run('unlocked'),4,'Progress survives update');
+upgraded.run('acknowledgeUpdate()');
+assert.equal(upgraded.elements.get('updateNotice').hidden,true);
+assert.equal(createRuntime(Object.fromEntries(upgraded.storage),{entry:true}).elements.get('updateNotice').hidden,true,'Notice must stay dismissed');
+assert.equal(createRuntime({'thronepath-installed-version':'1.6.2'},{entry:true}).elements.get('updateNotice').hidden,false);
+console.log('First install, upgrade, acknowledgement, reopen and progress preservation passed');

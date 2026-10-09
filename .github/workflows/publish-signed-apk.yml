@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ['release-dist/**', '.github/workflows/publish-signed-apk.yml']
+    paths: ['release-dist/**', '.github/workflows/publish-signed-apk.yml', 'scripts/android-smoke.py']
 permissions:
   contents: write
 concurrency:
@@ -12,6 +12,7 @@ concurrency:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
       - name: Reconstruir e conferir APK assinado
@@ -19,25 +20,76 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
           import hashlib,json,zipfile
-          root=Path('release-dist'); meta=json.loads((root/'manifest.json').read_text())
+          root=Path('release-dist');meta=json.loads((root/'manifest.json').read_text())
           data=b''.join(p.read_bytes() for p in sorted(root.glob('apk.*.part')))
           assert len(data)==meta['bytes']
           assert hashlib.sha256(data).hexdigest()==meta['sha256']
           assert f"THRONEPATH_VERSION_CODE={meta['versionCode']}" in (root/'notes.md').read_text()
-          out=Path(meta['filename']);out.write_bytes(data)
-          with zipfile.ZipFile(out) as z:
+          Path(meta['filename']).write_bytes(data)
+          with zipfile.ZipFile(meta['filename']) as z:
               assert z.testzip() is None
-              assert 'assets/index.html' in z.namelist()
-          print('APK assinado reconstruído e checksum conferido')
+              assert b"GAME_VERSION='1.6.3'" in z.read('assets/index.html')
           PY
-      - name: Publicar versão para o aviso do jogo
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: ''
+          log-accepted-android-sdk-licenses: false
+      - name: Preparar emulador Android
+        run: |
+          sdkmanager "platform-tools" "emulator" "build-tools;35.0.0" "system-images;android-35;google_apis;x86_64"
+          printf 'no\n' | avdmanager create avd --force -n thronepath -k "system-images;android-35;google_apis;x86_64" --device pixel_2
+          sudo chmod 666 /dev/kvm
+          "$ANDROID_HOME/emulator/emulator" -avd thronepath -no-window -no-audio -no-boot-anim -no-snapshot -gpu swiftshader_indirect > /tmp/emulator.log 2>&1 &
+          adb wait-for-device
+          for i in $(seq 1 120); do
+            if [ "$(adb shell getprop sys.boot_completed | tr -d '\r')" = '1' ]; then break; fi
+            sleep 2
+          done
+          test "$(adb shell getprop sys.boot_completed | tr -d '\r')" = '1'
+          adb shell input keyevent 82
+          adb shell settings put global window_animation_scale 0
+          adb shell settings put global transition_animation_scale 0
+          adb shell settings put global animator_duration_scale 0
+      - name: Conferir assinatura e abertura real
+        run: |
+          APK=$(python3 -c 'import json;print(json.load(open("release-dist/manifest.json"))["filename"])')
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --print-certs "$APK" | tee signature.txt
+          grep -q '4f8fb4776b110d46c8e2e6439737e14b02465e571374ccf0ca58a7a1eb8766b5' signature.txt
+          adb install "$APK"
+          python3 scripts/android-smoke.py fresh
+      - name: Testar atualizacao por cima da 1.6.0
+        run: |
+          APK=$(python3 -c 'import json;print(json.load(open("release-dist/manifest.json"))["filename"])')
+          adb uninstall com.lucasrodrigues.thronepath
+          curl --fail --location --retry 3 -o old.apk 'https://github.com/lucasrdgdasilva187-stack/Jogo-oficial-Thronepath-/releases/download/v1.6.0/Thronepath_v1_6_0.apk'
+          adb install old.apk
+          adb shell am start -n com.lucasrodrigues.thronepath/.MainActivity
+          sleep 6
+          adb shell input keyevent 3
+          sleep 2
+          adb install -r "$APK"
+          python3 scripts/android-smoke.py upgrade
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Thronepath-Android-startup-QA
+          path: |
+            smoke-*.png
+            smoke-*.log
+            signature.txt
+          retention-days: 14
+      - name: Publicar versao para o aviso do jogo
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           VERSION=$(python3 -c 'import json;print(json.load(open("release-dist/manifest.json"))["version"])')
           APK=$(python3 -c 'import json;print(json.load(open("release-dist/manifest.json"))["filename"])')
           if gh release view "$VERSION" > /dev/null 2>&1; then
-            echo 'Versão já publicada; não substituir arquivos existentes.'
+            echo 'Versao ja publicada; nao substituir arquivos existentes.'
             exit 0
           fi
           gh release create "$VERSION" "$APK" --target "$GITHUB_SHA" --title "Thronepath $VERSION — Alpha" --notes-file release-dist/notes.md --latest
