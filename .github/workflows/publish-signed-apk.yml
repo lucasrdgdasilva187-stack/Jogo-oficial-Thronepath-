@@ -8,7 +8,7 @@ permissions:
   contents: write
 concurrency:
   group: thronepath-release
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -43,13 +43,13 @@ jobs:
           sdkmanager "platform-tools" "emulator" "build-tools;35.0.0" "system-images;android-35;google_apis;x86_64"
           printf 'no\n' | avdmanager create avd --force -n thronepath -k "system-images;android-35;google_apis;x86_64" --device pixel_2
           sudo chmod 666 /dev/kvm
-          "$ANDROID_HOME/emulator/emulator" -avd thronepath -no-window -no-audio -no-boot-anim -no-snapshot -gpu swiftshader_indirect > /tmp/emulator.log 2>&1 &
-          adb wait-for-device
+          "$ANDROID_HOME/emulator/emulator" -avd thronepath -no-window -no-audio -no-boot-anim -no-snapshot -gpu software > /tmp/emulator.log 2>&1 &
+          if ! timeout 120 adb wait-for-device; then cat /tmp/emulator.log; exit 1; fi
           for i in $(seq 1 120); do
             if [ "$(adb shell getprop sys.boot_completed | tr -d '\r')" = '1' ]; then break; fi
             sleep 2
           done
-          test "$(adb shell getprop sys.boot_completed | tr -d '\r')" = '1'
+          if [ "$(adb shell getprop sys.boot_completed | tr -d '\r')" != '1' ]; then cat /tmp/emulator.log; exit 1; fi
           adb shell input keyevent 82
           adb shell settings put global window_animation_scale 0
           adb shell settings put global transition_animation_scale 0
@@ -81,6 +81,7 @@ jobs:
             smoke-*.png
             smoke-*.log
             signature.txt
+            /tmp/emulator.log
           retention-days: 14
       - name: Publicar versao para o aviso do jogo
         env:
