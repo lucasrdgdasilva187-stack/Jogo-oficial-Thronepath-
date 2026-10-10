@@ -52,11 +52,12 @@ jobs:
       - name: Aplicar Beta e validar APK protegido
         run: |
           python3 scripts/upgrade167.py
+          python3 scripts/upgrade168.py
           python3 scripts/package-android-web.py
-          GAME_HTML=web/index.html node tests/revision167.cjs
+          GAME_HTML=web/index.html node tests/revision168.cjs
           node tests/engine167.cjs web/index.html
-          timeout 180 node tests/browser167.cjs
-          THRONEPATH_PACKAGED=1 timeout 180 node tests/browser167.cjs
+          timeout 180 node tests/browser168.cjs
+          THRONEPATH_PACKAGED=1 timeout 180 node tests/browser168.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
