@@ -15,8 +15,8 @@ android {
         applicationId 'com.lucasrodrigues.thronepath'
         minSdk 24
         targetSdk 36
-        versionCode 15
-        versionName '1.6.5-alpha'
+        versionCode 17
+        versionName '1.6.7-beta'
     }
     if (canSign) {
         signingConfigs {
@@ -31,7 +31,8 @@ android {
     buildTypes {
         debug { debuggable true }
         release {
-            minifyEnabled false
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             if (canSign) signingConfig signingConfigs.release
         }
     }
@@ -52,5 +53,6 @@ tasks.register('checkSigning') {
     }
 }
 tasks.matching { it.name == 'preReleaseBuild' }.configureEach { dependsOn 'checkSigning' }
+
 
 

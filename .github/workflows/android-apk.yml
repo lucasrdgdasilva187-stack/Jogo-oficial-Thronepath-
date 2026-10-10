@@ -49,11 +49,19 @@ jobs:
           npx playwright install --with-deps chromium
           timeout 180 node tests/browser165.cjs
           THRONEPATH_PACKAGED=1 timeout 180 node tests/browser165.cjs
+      - name: Aplicar Beta e validar APK protegido
+        run: |
+          python3 scripts/upgrade167.py
+          python3 scripts/package-android-web.py
+          GAME_HTML=web/index.html node tests/revision167.cjs
+          node tests/engine167.cjs web/index.html
+          timeout 180 node tests/browser167.cjs
+          THRONEPATH_PACKAGED=1 timeout 180 node tests/browser167.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: Thronepath-visual-QA
-          path: previews/browser165/
+          path: previews/
           retention-days: 14
       - uses: actions/setup-java@v4
         with:
@@ -115,4 +123,5 @@ jobs:
           path: /usr/local/lib/android/sdk/build-tools/35.0.0/lib/apksigner.jar
           if-no-files-found: error
           retention-days: 7
+
 

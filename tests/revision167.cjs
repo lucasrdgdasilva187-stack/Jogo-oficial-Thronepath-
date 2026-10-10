@@ -1,0 +1,8 @@
+const assert=require('assert');const {createRuntime,html}=require('./runtime167.cjs');
+assert(!html.includes('id="entryScreen"'));assert(!html.includes('data-tab="qualitySettings"'));
+const r=createRuntime({}, {touch:true,audio:true});assert.equal(r.run('GAME_VERSION'),'1.6.7');assert.equal(r.run('settings.quality'),'high');
+r.run('openHomeSection("tutorialSettings")');for(let n=0;n<10;n++){r.run('setTutorialStep('+n+')');let max=0,landed=false;for(let i=0;i<(n===2?1150:780);i++){r.run('tickTutorial(1/120)');max=Math.max(max,r.run('tutorialState.p.x'));if(n===2&&r.run('tutorialState.p.on===2'))landed=true;}r.run('renderTutorial()');if([1,2,3,8,9].includes(n))assert(max>650,'Tutorial crossing '+n);if(n===2)assert(landed,'Ferry must reach the far bank');}
+for(const [width,height] of [[640,360],[844,390],[1536,691]]){const a=createRuntime({}, {width,height,touch:true});const b=a.run('controlRects(settings.buttons,innerWidth,innerHeight)');assert(b.right.x-b.right.w/2-(b.left.x+b.left.w/2)>30);assert(b.left.y-b.left.h/2>height*.7)}
+const old={layoutRevision:7,buttons:{left:{x:.085,y:.79,size:98},right:{x:.225,y:.79,size:98},jump:{x:.90,y:.79,size:112}}};assert.equal(createRuntime({'thronepath-settings-v1':JSON.stringify(old)}).run('settings.buttons.left.y'),.90);
+const custom={layoutRevision:7,buttons:{left:{x:.14,y:.6,size:110},right:{x:.35,y:.6,size:110},jump:{x:.8,y:.6,size:120}}};assert.equal(createRuntime({'thronepath-settings-v1':JSON.stringify(custom)}).run('settings.buttons.left.y'),.6);
+for(let n=0;n<51;n++)r.run('load('+n+');draw()');console.log('Beta tutorials, fixed quality, control spacing, layout migration and 51 level renders passed');
