@@ -9,6 +9,7 @@ assert.equal(r.run('claimThrone()'),false,'Throne must be reached before it can 
 r.run('state.p.x=state.level.door.x-20;state.p.y=state.level.platforms.at(-1).y-state.p.h;state.p.on=state.level.platforms.length-1;state.p.ground=true;draw()');
 assert.equal(r.run('claimThrone()'),true);assert.equal(r.run('mode'),'ending');assert(r.run('awards.includes(150)'));assert.equal(r.run('metrics.completions'),1);assert.equal(r.run('claimThrone()'),false);
 r.run('updateEnding(4)');assert(!r.elements.get('creditsPanel').hidden);assert(!r.elements.get('creditsBack').hidden);
+r.run('goHome();openCredits();goHome()');assert.equal(r.run('mode'),'win','Reviewing credits after completion must preserve the completed journey');r.run('play()');assert.equal(r.run('current'),0);
 const old={unlocked:50,best:{50:100},falls:4,metrics:{seconds:3661,deaths:20},awards:[1,30,150],cleanPhases:[51]};
 const migrated=createRuntime({'porta2d-v1':JSON.stringify(old),'thronepath-settings-v1':JSON.stringify({compact:false,showTime:true})});
 assert.equal(migrated.run('settings.hudMode'),'full');assert.equal(migrated.run('metrics.totalSeconds'),3661);assert.equal(migrated.run('metrics.completions'),1);assert(migrated.run('awards.includes(30)&&awards.includes(150)'));
