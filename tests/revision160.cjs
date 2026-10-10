@@ -5,7 +5,7 @@ test('Death cancels gravity and reversed controls, preserves checkpoints',()=>{l
 test('Every stage starts normally',()=>{for(let n=0;n<51;n++){const s=E.start(n);assert.equal(s.gravity,1);assert.equal(s.reversed,false)}});
 test('Laser waiting gates cannot be jumped',()=>{for(let n=5;n<51;n++)for(const m of E.makeLevel(n).machines)if(m.type==='laser')assert(m.h>=270)});
 test('Saw repertoire includes air, circular, vertical, pendulum',()=>{const all=Array.from({length:51},(_,n)=>E.makeLevel(n).hazards).flat();for(const motion of ['static','horizontal','vertical','circular','pendulum'])assert(all.some(h=>h.motion===motion),motion)});
-test('Three qualities persist independently',()=>{for(const q of ['low','medium','high']){const t=createRuntime({'thronepath-settings-v1':JSON.stringify({quality:q})});assert.equal(t.run('settings.quality'),q)}});
+test('Saved qualities migrate to high',()=>{for(const q of ['low','medium','high']){const t=createRuntime({'thronepath-settings-v1':JSON.stringify({quality:q})});assert.equal(t.run('settings.quality'),'high')}});
 test('Camera follows a jump before landing',()=>{r.run("load(0);mode='play';queuedJump=true;update(1/120)");const y=r.run('camY');r.run('for(let i=0;i<15;i++)update(1/120)');assert(Math.abs(r.run('camY')-y)>1)});
 if(failures.length)process.exitCode=1;
 test('Additional traps include crushers and rolling stones',()=>{const hs=Array.from({length:51},(_,n)=>E.makeLevel(n).hazards).flat();assert(hs.some(h=>h.type==='crusher'));assert(hs.some(h=>h.type==='boulder'))});

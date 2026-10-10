@@ -31,14 +31,14 @@ def check(fresh):
  button('Got it',False)
  if not fresh:assert button('Continuar',False),'Installed update must show one-time release notes'
  else:assert not button('Continuar',False),'First install must not show release notes'
- button('Toque para começar');button('Jogar');time.sleep(4);alive()
+ button('Jogar');time.sleep(4);alive()
  log=adb('logcat','-d','-s','AndroidRuntime:E','chromium:E')
  assert 'FATAL EXCEPTION' not in log,log
  assert 'Uncaught ' not in log,log
  Path('smoke-'+('fresh' if fresh else 'upgrade')+'.log').write_text(log)
  subprocess.run(['adb','shell','screencap','-p','/sdcard/smoke.png'],check=True)
  subprocess.run(['adb','pull','/sdcard/smoke.png','smoke-'+('fresh' if fresh else 'upgrade')+'.png'],check=True)
- print('PASS Android '+('fresh install' if fresh else '1.6.0 -> 1.6.3 update')+' opens and starts a phase',flush=True)
+ print('PASS Android '+('fresh install' if fresh else '1.6.0 -> 1.6.5 update')+' opens and starts a phase',flush=True)
 import sys
 try:
  check(sys.argv[1]=='fresh')

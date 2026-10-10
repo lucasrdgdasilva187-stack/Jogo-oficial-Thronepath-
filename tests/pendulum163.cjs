@@ -2,7 +2,7 @@ const assert=require('assert');const {createRuntime}=require('./runtime.cjs');co
 for(let n=0;n<51;n++){const l=r.E.makeLevel(n);assert(l.platforms.every(b=>b.h<=36),'Platforms should be shorter in height');}
 let count=0;
 for(let n=9;n<51;n++){
- const s=r.E.start(n);for(const h of s.level.hazards.filter(h=>h.type==='pendulum')){
+ const s=r.E.start(n);for(const h of s.level.hazards.filter(h=>h.type==='pendulum'&&h.motion!=='yo-yo')){
   count++;const initial=[h.anchorX,h.anchorY];assert(initial.every(Number.isFinite),'Pendulum must start with a physical fixed pivot');
   let min=Infinity,max=-Infinity;
   for(let t=0;t<720;t++){

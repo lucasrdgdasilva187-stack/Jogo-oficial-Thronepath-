@@ -1,0 +1,14 @@
+body.tutorialOpen .tutorialDots{display:flex!important;gap:6px;flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;max-width:100%;padding:8px 1px 6px;scrollbar-width:thin}
+body.tutorialOpen .tutorialDots button{flex:0 0 auto;font-size:12px;min-height:32px;padding:5px 10px}
+body.tutorialOpen .tutorialToolbar{margin:6px 0 0;justify-content:center;gap:14px}
+body.tutorialOpen #tutorialCanvas{display:block;width:min(100%,960px);height:auto;aspect-ratio:12/5;max-height:calc(100dvh - 215px);object-fit:contain;border-radius:12px;border:2px solid #c9ad73}
+body.tutorialOpen #tutorialCaption{font-size:13px;line-height:1.35;min-height:1.4em;margin:6px 0}
+body.tutorialOpen .tutorialChoose{justify-content:center;margin:0 0 5px}
+.achievementRow:not(.unlocked){opacity:.8;background:#142c38;border-color:#597079}
+.achievementRow.unlocked{background:linear-gradient(100deg,#325044,#1c3541);border-color:#dfc581;box-shadow:inset 3px 0 #e5c57a}
+.achievementStatus{font-size:12px}.achievementRow.unlocked .achievementStatus{color:#ffe6aa;font-weight:bold}
+#achievementToast{position:fixed;z-index:30;top:78px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:12px;width:min(430px,80vw);padding:12px 18px;background:linear-gradient(110deg,#244844f5,#102c3bf5);border:1px solid #e4c17e;border-radius:14px;box-shadow:0 5px 24px #0006;pointer-events:none}
+#achievementToast[hidden]{display:none}#achievementToast>span{font-size:32px}#achievementToast small{display:block;letter-spacing:.12em;font-size:9px;color:#e1c68b}#achievementToast strong{display:block;color:#ffe4a5;font-size:16px;margin:3px 0}#achievementToast p{font-size:11px;margin:0;color:#e0e9dd}#achievementToast.celebrate{animation:awardArrival 3.6s ease both}
+@keyframes awardArrival{0%{opacity:0;transform:translate(-50%,-16px) scale(.96)}12%,86%{opacity:1;transform:translate(-50%,0) scale(1)}100%{opacity:0;transform:translate(-50%,-8px)}}
+@media(max-height:430px){body.tutorialOpen #tutorialCanvas{max-height:calc(100dvh - 205px)}body.tutorialOpen .tutorialDots button{min-height:29px;font-size:11px}#achievementToast{top:60px;padding:8px 12px}}
+@media(prefers-reduced-motion:reduce){#achievementToast.celebrate{animation:none}}
