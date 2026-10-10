@@ -59,7 +59,7 @@ s=s[:pos]+topics+s[pos:]
 swap(' return s;\n}\nconst TUTORIAL_CAPTIONS', " if(step===8){s.p.x=330;l.hazards=[{type:'pendulum',platform:0,anchorX:520,anchorY:105,x:520,y:260,r:23,motion:'yo-yo',length:180,speed:1.2,phase:0,solidAnchor:false}];}\n if(step===9){l.platforms=[demoBlock(40,310,270),demoBlock(470,295,390)];s.p.x=100;}\n return s;\n}\nconst TUTORIAL_CAPTIONS")
 swap('[1,3,6].includes(tutorialStep)', '[1,3,6,9].includes(tutorialStep)')
 swap("if(tutorialStep===7)right=p.x<825;", "if(tutorialStep===7)right=p.x<825;\n if(tutorialStep===8){const saw=l.hazards[0];right=p.x<810&&(p.x>550||saw.y<180);}")
-swap('paintBackdrop(g,polishedBackgrounds.village,6,960,400,time*60,time);',"const demoBiome=step%2?1:3;paintBackdrop(g,backgrounds[demoBiome],demoBiome,960,400,time*20,time); ")
+swap('paintBackdrop(g,polishedBackgrounds.village,6,960,400,time*60,time);',"const demoBiome=step%2?1:3;paintBackdrop(g,currentBackground(demoBiome),demoBiome,960,400,time*20,time); ")
 swap('s.level.platforms[i],i,6,detail,time','s.level.platforms[i],i,demoBiome,detail,time')
 swap(' for(const e of s.level.enemies)paintCreature', " for(const h of s.level.hazards)paintTutorialSaw(g,h,time);\n for(const e of s.level.enemies)paintCreature")
 start=s.index('function paintDemoButton(');end=s.index('function paintDemoWorld',start)
