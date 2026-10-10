@@ -1,5 +1,5 @@
 const assert=require('assert');const {createRuntime,html}=require('./runtime167.cjs');
-assert(!html.includes('id="entryScreen"'));assert(!html.includes('data-tab="qualitySettings"'));
+assert(!html.includes('globalBeta'),'Canvas opacity must use globalAlpha');assert(html.includes('globalAlpha'));assert(!html.includes('id="entryScreen"'));assert(!html.includes('data-tab="qualitySettings"'));
 const r=createRuntime({}, {touch:true,audio:true});assert.equal(r.run('GAME_VERSION'),'1.6.7');assert.equal(r.run('settings.quality'),'high');
 r.run('openHomeSection("tutorialSettings")');for(let n=0;n<10;n++){r.run('setTutorialStep('+n+')');let max=0,landed=false;for(let i=0;i<(n===2?1150:780);i++){r.run('tickTutorial(1/120)');max=Math.max(max,r.run('tutorialState.p.x'));if(n===2&&r.run('tutorialState.p.on===2'))landed=true;}r.run('renderTutorial()');if([1,2,3,8,9].includes(n))assert(max>650,'Tutorial crossing '+n);if(n===2)assert(landed,'Ferry must reach the far bank');}
 for(const [width,height] of [[640,360],[844,390],[1536,691]]){const a=createRuntime({}, {width,height,touch:true});const b=a.run('controlRects(settings.buttons,innerWidth,innerHeight)');assert(b.right.x-b.right.w/2-(b.left.x+b.left.w/2)>30);assert(b.left.y-b.left.h/2>height*.7)}
