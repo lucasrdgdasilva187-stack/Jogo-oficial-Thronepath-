@@ -1,0 +1,13 @@
+const assert=require('assert'),fs=require('fs'),{createRuntime}=require('./runtime167.cjs');
+const r=createRuntime({}, {touch:false});
+assert.equal(r.run('GAME_VERSION'),'1.6.10');
+assert.equal(r.run('typeof openCredits'),'undefined','Credits must not have a menu entry point');
+assert(!r.elements.has('openCredits'),'Credits button must be removed from the home menu');
+assert(r.elements.get('creditsPanel').hidden);
+r.run('play();window.pauseGame()');assert(r.elements.get('creditsPanel').hidden);
+r.run('openOptions();goHome()');assert(r.elements.get('creditsPanel').hidden);
+r.run('play();load(50);state.won=true;finishStage()');assert(r.elements.get('creditsPanel').hidden,'Castle entrance must not show credits');
+r.run('state.p.x=980;state.p.y=334;state.p.ground=true;state.p.on=4;claimThrone();updateEnding(4)');
+assert(!r.elements.get('creditsPanel').hidden,'Credits must open after claiming the throne');
+assert(r.run('awards.includes(150)'));assert(r.run('canResetAll()'));
+console.log('1.6.10: credits inaccessible from menus and unlocked only by completing the journey.');
