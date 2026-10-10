@@ -1,0 +1,24 @@
+name: Download direto APK 1.6.9
+on:
+  push:
+    branches: [apk-download-1-6-9]
+    paths:
+      - 'distribution/1.6.9/**'
+      - '.github/workflows/direct-apk169.yml'
+permissions:
+  contents: write
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reunir e conferir APK assinado
+        run: |
+          cat distribution/1.6.9/part-1.bin distribution/1.6.9/part-2.bin > Thronepath_v1_6_9_Beta.apk
+          echo '191748d74310f1d1c51d87c6b1603a901ff68862536c549d85959ae331a4e5ac  Thronepath_v1_6_9_Beta.apk' | sha256sum --check --strict
+      - name: Publicar download direto
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create v1.6.9-beta Thronepath_v1_6_9_Beta.apk --target c36055e7cfb3e2fa828f8281d2e045edda760f67 --title "Thronepath 1.6.9 Beta" --prerelease --notes "APK Android assinado com a chave permanente do Thronepath. Inclui as melhorias anteriores, o final no castelo, créditos oficiais, conquistas, estatísticas e opções para rejogar ou apagar o progresso após concluir a jornada."
