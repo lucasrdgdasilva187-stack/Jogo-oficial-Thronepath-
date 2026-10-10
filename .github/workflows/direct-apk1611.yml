@@ -1,0 +1,25 @@
+name: Publicar APK Thronepath 1.6.11
+on:
+  push:
+    branches: [apk-download-1-6-11]
+    paths: ['distribution/1.6.11/**', '.github/workflows/direct-apk1611.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Conferir APK assinado
+        run: |
+          cat distribution/1.6.11/part-1.bin distribution/1.6.11/part-2.bin > Thronepath_v1_6_11.apk
+          echo 'd7596a5be9c2fe2b99bc4587a86d7ea2186c42e265941a707ee696d06cc10cf1  Thronepath_v1_6_11.apk' | sha256sum --check --strict
+      - name: Publicar download direto
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          gh release create v1.6.11 Thronepath_v1_6_11.apk
+          --target 1050f4730d64c74ce9c673b56efdc5dbdb675905
+          --title 'Thronepath 1.6.11' --latest
+          --notes 'Vila renovada com plataformas coerentes. Nove ambientes: vila, floresta, praia, deserto, ruínas, pântano, gelo, montanhas e caverna de cristais. Na fase 51, o castelo se aproxima a partir do terceiro checkpoint, seguido de um percurso contínuo pelo interior até o trono. Créditos apenas depois da conclusão. P: pausa; M: início. APK com assinatura permanente e versão 1.6.11.'
