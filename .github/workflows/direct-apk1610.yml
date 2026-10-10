@@ -1,0 +1,24 @@
+name: Download direto APK 1.6.10
+on:
+  push:
+    branches: [apk-download-1-6-10]
+    paths:
+      - 'distribution/1.6.10/**'
+      - '.github/workflows/direct-apk1610.yml'
+permissions:
+  contents: write
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reunir e conferir APK assinado
+        run: |
+          cat distribution/1.6.10/part-1.bin distribution/1.6.10/part-2.bin > Thronepath_v1_6_10.apk
+          echo '93682af9645917a8e34d6ed247c1d6e877c3f919b0321e0e8f23903d05509c1c  Thronepath_v1_6_10.apk' | sha256sum --check --strict
+      - name: Publicar download direto
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create v1.6.10 Thronepath_v1_6_10.apk --target 7e0f6e99d0241d96be480e9d8aed5a70044e5217 --title "Thronepath 1.6.10" --latest --notes "APK Android assinado com a chave permanente do Thronepath. Créditos exibidos apenas após concluir o jogo. Atalhos: P para pausar ou continuar e M para voltar à tela inicial. Mantém as melhorias anteriores e a opção de rejogar preservando conquistas."
