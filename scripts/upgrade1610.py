@@ -18,4 +18,4 @@ text=''.join(lines)
 assert hashlib.sha256(text.encode()).hexdigest()==patch['resultSha256'],'Unexpected Beta output'
 for i,v in enumerate(assets):text=text.replace(f'__THRONEPATH_ASSET_{i}__',v)
 p.write_text(text)
-print('Thronepath 1.6.10 Beta: credits only after completion, P pause and M home shortcuts applied')
+print('Thronepath 1.6.10: credits only after completion, P pause and M home shortcuts applied')
