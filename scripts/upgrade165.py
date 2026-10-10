@@ -21,6 +21,8 @@ swap("$('enterGame').focus?.()", "$('play').focus?.()")
 # A short decorative opening remains independent of asset/network completion.
 start=s.index('function startLoadingScreen(){');end=s.index('startLoadingScreen();',start)+len('startLoadingScreen();')
 s=s[:start]+(root/'source/loading165.js').read_text()+s[end:]
+swap('#controls button,.lowQuality #controls button{background:rgba', '#controls button,#controls button.jump,.lowQuality #controls button{background:rgba')
+swap('#controls button.pressed,.lowQuality #controls button.pressed{background:rgba', '#controls button.pressed,#controls button.jump.pressed,.lowQuality #controls button.pressed{background:rgba')
 swap('rgba(20,45,62,.18)','rgba(20,45,62,.42)')
 swap('rgba(44,83,108,.30)','rgba(44,83,108,.60)')
 swap('border-color:#c4d9e455;border-bottom-color:#c4d9e455','border-color:#d6e5dda0;border-bottom-color:#d6e5dda0')
