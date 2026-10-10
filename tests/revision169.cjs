@@ -1,5 +1,6 @@
 const assert=require('assert'),{createRuntime}=require('./runtime167.cjs');
 const r=createRuntime({}, {touch:true});
+assert.equal(r.run('canResetAll()'),false);assert.equal(r.run('resetEverything()'),false,'Full reset must stay locked before completing the game');
 assert.equal(r.run('GAME_VERSION'),'1.6.9');
 assert.equal(r.run('ACHIEVEMENTS.length'),150);assert.equal(r.run('ACHIEVEMENTS.at(-1)[0]'),150);
 assert.equal(r.run('ACHIEVEMENTS.at(-1)[3]'),'completions');
@@ -8,8 +9,11 @@ assert(r.run('castleRoom'));assert.equal(r.run('mode'),'play');assert(!r.run('aw
 assert.equal(r.run('claimThrone()'),false,'Throne must be reached before it can be claimed');
 r.run('state.p.x=state.level.door.x-20;state.p.y=state.level.platforms.at(-1).y-state.p.h;state.p.on=state.level.platforms.length-1;state.p.ground=true;draw()');
 assert.equal(r.run('claimThrone()'),true);assert.equal(r.run('mode'),'ending');assert(r.run('awards.includes(150)'));assert.equal(r.run('metrics.completions'),1);assert.equal(r.run('claimThrone()'),false);
-r.run('updateEnding(4)');assert(!r.elements.get('creditsPanel').hidden);assert(!r.elements.get('creditsBack').hidden);
-r.run('goHome();openCredits();goHome()');assert.equal(r.run('mode'),'win','Reviewing credits after completion must preserve the completed journey');r.run('play()');assert.equal(r.run('current'),0);
+r.elements.get('creditsContent').scrollHeight=2000;r.run('updateEnding(4)');assert(!r.elements.get('creditsPanel').hidden);assert(!r.elements.get('creditsBack').hidden);
+assert.equal(r.run('canResetAll()'),true);r.run('updateEnding(200)');assert(!r.elements.get('postCreditsChoices').hidden);
+r.run('save()');const kept=r.storage.get('porta2d-v1');r.run('goHome()');assert.equal(r.storage.get('porta2d-v1'),kept,'Leaving credits must keep completed progress');
+r.run('goHome();openCredits();goHome()');assert.equal(r.run('mode'),'win','Reviewing credits after completion must preserve the completed journey');r.elements.get('replayJourney').onclick();assert.equal(r.run('current'),0);assert.equal(r.run('mode'),'play');
+assert(r.run('awards.includes(150)&&canResetAll()'),'Replaying must preserve awards and the unlocked reset option');r.run('requestFullReset();cancelFullReset()');assert(r.run('awards.includes(150)'),'Cancelling reset must preserve all awards');assert.equal(r.run('resetEverything()'),true);assert.equal(r.run('awards.length'),0);assert.equal(r.run('metrics.totalSeconds'),0);assert.equal(r.run('playedDates.length'),0);assert.equal(r.run('unlocked'),0);assert.equal(r.run('canResetAll()'),false);
 const old={unlocked:50,best:{50:100},falls:4,metrics:{seconds:3661,deaths:20},awards:[1,30,150],cleanPhases:[51]};
 const migrated=createRuntime({'porta2d-v1':JSON.stringify(old),'thronepath-settings-v1':JSON.stringify({compact:false,showTime:true})});
 assert.equal(migrated.run('settings.hudMode'),'full');assert.equal(migrated.run('metrics.totalSeconds'),3661);assert.equal(migrated.run('metrics.completions'),1);assert(migrated.run('awards.includes(30)&&awards.includes(150)'));
