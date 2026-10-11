@@ -3,8 +3,8 @@ from pathlib import Path
 import base64, hashlib, json, re, shutil, subprocess, sys
 
 ROOT = Path(__file__).resolve().parents[1]
-EXPECTED = '11fd03d9a06b75d48226467c693a39ef2b59fe7e8aa88a4301a21db5685589cc'
-for version in ['', '160', '161', '163', '164', '165', '167', '168', '169', '1610', '1611', '1612', 'hud1612']:
+EXPECTED = 'c3338e83a6127ce3bbb0806dff46d059db57ca6dfc52bbd4dc0948716da4e22f'
+for version in ['', '160', '161', '163', '164', '165', '167', '168', '169', '1610', '1611', '1612', 'hud1612', '1613']:
     name = f'upgrade{version}.py' if version else 'assemble-game.py'
     subprocess.run([sys.executable, str(ROOT / 'scripts' / name)], check=True)
 original = (ROOT / 'web/index.html').read_bytes()

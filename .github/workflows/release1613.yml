@@ -1,0 +1,47 @@
+name: Compilar Thronepath 1.6.13
+on:
+  push:
+    branches: [main]
+    paths: ['source/revision1613.patch.json', 'scripts/upgrade1613.py', '.github/workflows/release1613.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Montar e verificar o jogo completo
+        run: |
+          python3 scripts/build-website.py
+          python3 scripts/package-android-web.py
+          node tests/revision1613.cjs
+          node tests/revision1612_journey.cjs
+          node tests/engine1612.cjs web/index.html
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.13'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: ''
+          log-accepted-android-sdk-licenses: false
+      - name: Preparar Android e compilar release
+        run: |
+          yes | sdkmanager --licenses > /dev/null || true
+          sdkmanager "platforms;android-36" "build-tools;35.0.0"
+          gradle --no-daemon -PallowUnsignedRelease :app:assembleRelease
+          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging app/build/outputs/apk/release/app-release-unsigned.apk | head -5
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Thronepath-1.6.13-release
+          path: app/build/outputs/apk/release/*.apk
+          if-no-files-found: error
+          retention-days: 14
