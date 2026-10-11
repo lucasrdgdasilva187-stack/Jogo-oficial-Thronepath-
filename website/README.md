@@ -1,5 +1,9 @@
 # Thronepath — site público
 
+Jogue: https://thronepath-1-6-12.vercel.app/
+
+O endereço de compartilhamento usa somente o nome do jogo e a versão. A publicação da Vercel usa a revisão verificada `cdd96b6e33183de9a8e6d1a21f0c643d4b762ed0`, com acesso público sem login. O launcher em `website/vercel-release/build.py` monta essa revisão exata, verifica o checksum do HTML e executa os testes de viewport, controles e preferências antes de publicar. `vercel.json` mantém o service worker sem cache de longa duração. Esses dois arquivos são o pacote fonte enviado à Vercel; o projeto ainda não está ligado à integração GitHub da Vercel.
+
 O menu original ocupa a tela toda, sem as faixas laterais desfocadas. O título público é Thronepath, sem versão. A lógica do jogo e as chaves do progresso local permanecem iguais.
 
 `python3 scripts/build-website.py` monta o HTML original, verifica o checksum da revisão atual do repositório, extrai imagens e áudio sem alterar os bytes e escreve o site completo em `website-dist/`. Nenhum recurso depende de Lovable ou GitHub durante a partida. Não há badge da Lovable no site estático.
