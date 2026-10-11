@@ -26,6 +26,7 @@ jobs:
           node tests/website-viewport.cjs
           GAME_HTML=website-dist/index.html node tests/website-canvas.cjs
           GAME_HTML=website-dist/index.html node tests/options1612.cjs
+          GAME_HTML=website-dist/index.html node tests/hud1612.cjs
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

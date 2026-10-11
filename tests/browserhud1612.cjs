@@ -1,0 +1,25 @@
+const {chromium}=require('playwright'),assert=require('assert'),fs=require('fs'),path=require('path'),http=require('http');
+(async()=>{
+ const root=path.resolve(__dirname,process.env.THRONEPATH_WEBSITE?'../website-dist':process.env.THRONEPATH_PACKAGED?'../android-web':'../web');const server=http.createServer((req,res)=>fs.readFile(path.join(root,req.url.split('?')[0]),(e,b)=>{res.writeHead(e?404:200);res.end(e?'':b)}));await new Promise(r=>server.listen(0,'127.0.0.1',r));
+ const browser=await chromium.launch({headless:true,executablePath:process.env.THRONEPATH_BROWSER||undefined,args:['--no-sandbox']});fs.mkdirSync(path.resolve(__dirname,'../previews/hud1612'),{recursive:true});
+ for(const size of [{width:1536,height:691},{width:844,height:390},{width:844,height:300}]){
+ const page=await browser.newPage({viewport:size,hasTouch:true});const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto('http://127.0.0.1:'+server.address().port+'/index.html');await page.evaluate(()=>ThronepathReady);
+ await page.evaluate(()=>{openOptions();showSettingsTab('hudSettings')});assert.equal(await page.locator('#hudSettings input[type=range]').count(),0,'appearance sliders belong inside the editor');await page.locator('#editControls').click();
+ await page.locator('#controlsOpacitySetting').evaluate(el=>{el.value=0;el.dispatchEvent(new Event('input',{bubbles:true}))});assert.equal(await page.evaluate(()=>settings.controlsOpacity),100);assert.equal(await page.locator('#controlEditArea').evaluate(el=>getComputedStyle(el).opacity),'0');
+ await page.locator('#cancelControls').click();assert.equal(await page.evaluate(()=>settings.controlsOpacity),100);
+ await page.locator('#editControls').click();for(const [id,v]of [['hudOpacitySetting',0],['controlsOpacitySetting',35]])await page.locator('#'+id).evaluate((el,value)=>{el.value=value;el.dispatchEvent(new Event('input',{bubbles:true}))},v);await page.locator('#saveControls').click();
+ await page.reload();await page.evaluate(()=>ThronepathReady);assert.deepEqual(await page.evaluate(()=>[settings.hudOpacity,settings.controlsOpacity]),[0,35]);await page.evaluate(()=>{settings.hudMode='hidden';applySettings();play();draw()});
+ assert.equal(await page.locator('#hud').evaluate(el=>getComputedStyle(el).display),'none');const pause=page.locator('#hiddenHudMenu');await pause.waitFor({state:'visible'});assert.equal(await pause.evaluate(el=>getComputedStyle(el).opacity),'1');await pause.click();assert.equal(await page.evaluate(()=>mode),'pause');
+ await page.evaluate(()=>{settings.hudMode='full';settings.hudOpacity=100;applySettings();play();recordPlayTime(65);phaseDeaths=4;refreshPlayingHud();draw()});
+ for(const id of ['timeHud','phaseTimeHud','deaths','resetRunTime','runCountHud','lifetimeHud'])assert(await page.locator('#'+id).isVisible());
+ await page.screenshot({path:path.resolve(__dirname,`../previews/hud1612/full-${size.width}-${size.height}.png`)});
+ page.on('dialog',d=>d.accept());await page.locator('#resetRunTime').click();assert.equal(await page.evaluate(()=>Math.floor(metrics.seconds)),0);assert(await page.evaluate(()=>metrics.totalSeconds>=65));
+ await page.evaluate(()=>{openOptions();showSettingsTab('achievementsSettings');awards.push(1);renderAchievements()});
+ const rows=await page.locator('.achievementRow').evaluateAll(rs=>rs.slice(0,10).map(row=>{const s=row.querySelector('.achievementStatus'),b=s.getBoundingClientRect();return{text:s.textContent,width:b.width,whiteSpace:getComputedStyle(s).whiteSpace,scroll:s.scrollWidth}}));assert(rows.every(r=>r.whiteSpace==='nowrap'&&r.scroll<=r.width+2&&(!r.text.includes('Concluída')||r.width>=50)),'achievement status must be readable on one line');
+ await page.screenshot({path:path.resolve(__dirname,`../previews/hud1612/achievements-${size.width}-${size.height}.png`)});
+ await page.evaluate(()=>{play();settings.hudMode='compact';applySettings();showAchievement('Primeiro Passo');showAchievement('Salto longo');draw()});assert(await page.locator('#toast').isVisible());assert.equal(await page.locator('#toast').evaluate(el=>getComputedStyle(el).pointerEvents),'none');
+ await page.screenshot({path:path.resolve(__dirname,`../previews/hud1612/toast-${size.width}-${size.height}.png`)});await page.waitForTimeout(2600);assert.equal(await page.locator('#toast').isVisible(),false);
+ await page.evaluate(()=>{startEnding();updateEnding(4)});assert(await page.locator('#endingSummary').isVisible());assert.equal(await page.locator('#creditsPanel').isVisible(),false);await page.screenshot({path:path.resolve(__dirname,`../previews/hud1612/summary-${size.width}-${size.height}.png`)});await page.locator('#continueToCredits').click();assert(await page.locator('#creditsPanel').isVisible());assert.equal(await page.locator('#endingSummary').isVisible(),false);
+ assert.deepEqual(errors,[]);console.log('PASS editor, visible pause, full HUD, readable awards, 2.5-second toast and summary before credits',size);await page.close();
+ }await browser.close();await new Promise(r=>server.close(r));
+})().catch(e=>{console.error(e);process.exit(1)});
