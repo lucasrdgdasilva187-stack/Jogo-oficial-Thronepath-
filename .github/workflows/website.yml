@@ -2,7 +2,7 @@ name: Publicar Thronepath
 on:
   push:
     branches: [main]
-    paths: ['website/**', 'scripts/build-website.py', '.github/workflows/website.yml']
+    paths: ['website/**', 'scripts/**', 'source/**', 'tests/website-*.cjs', '.github/workflows/website.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -21,6 +21,11 @@ jobs:
       - uses: actions/checkout@v4
       - name: Montar site a partir do jogo original
         run: python3 scripts/build-website.py
+      - name: Verificar viewport, controles e preferências
+        run: |
+          node tests/website-viewport.cjs
+          GAME_HTML=website-dist/index.html node tests/website-canvas.cjs
+          GAME_HTML=website-dist/index.html node tests/options1612.cjs
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

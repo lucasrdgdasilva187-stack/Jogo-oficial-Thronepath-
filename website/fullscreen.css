@@ -1,9 +1,22 @@
-/* The original castle art fills the viewport; no blurred side bands. */
-.homeScreen{--home-height:max(100dvh,calc(100vw * .5625));--home-top:calc((100dvh - var(--home-height))/2)}
-.homeScreen #menuArtwork{object-fit:cover!important;object-position:center!important}
-.homeScreen #overlay::before{display:none!important}
+/* Artwork fills the screen; interface fits the actual visible viewport. */
+:root{--app-width:100vw;--app-height:100dvh;--app-top:0px;--app-left:0px}
+#wrap{position:fixed;inset:auto;top:var(--app-top);left:var(--app-left);width:var(--app-width);height:var(--app-height);display:block}
+#screen{width:100%;height:100%!important}
+.homeScreen #menuArtwork{object-fit:cover!important;object-position:center top!important}
+.homeScreen #overlay::before{content:none!important;display:none!important}
 body.homeScreen #versionLabel,#buildLabel{display:none!important}
-#siteTools{position:fixed;left:max(10px,env(safe-area-inset-left));bottom:max(8px,env(safe-area-inset-bottom));z-index:20;display:none;align-items:center;gap:8px;font-size:11px;color:#fff5dc;text-shadow:0 1px 3px #102638}
+.homeScreen #overlay:not([hidden]) #menuPanel{top:var(--home-menu-top);width:clamp(210px,34vw,380px);max-width:calc(100% - max(24px,env(safe-area-inset-left)) - max(24px,env(safe-area-inset-right)));max-height:calc(var(--app-height) - var(--home-menu-top) - max(12px,env(safe-area-inset-bottom)) - 48px);overflow:auto;touch-action:pan-y;padding:3px 3px 8px}
+.homeScreen #mainButtons{display:flex;flex-direction:column;gap:var(--home-gap)}
+.homeScreen #mainButtons button{height:var(--home-button-height);min-height:44px;padding:2px 22px;font-size:clamp(14px,calc(var(--home-button-height)*.44),24px);border-width:3px;min-width:0}
+:root[data-compact-menu="true"] .homeScreen #overlay:not([hidden]) #menuPanel{width:min(88%,440px)}
+:root[data-compact-menu="true"] .homeScreen #mainButtons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+.homeScreen #stats{font-size:12px;line-height:1.2;margin:8px 0 0}
+#overlay:not([hidden]) .panel{max-height:calc(var(--app-height) - max(12px,env(safe-area-inset-top)) - max(12px,env(safe-area-inset-bottom)));overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y}
+#controls,#controlEditArea{inset:max(12px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}
+#controlEditorToolbar{max-height:calc(var(--app-height) - max(12px,env(safe-area-inset-top)) - max(12px,env(safe-area-inset-bottom)));overflow:auto;touch-action:pan-y}
+#hud{max-width:calc(100% - max(14px,env(safe-area-inset-left)) - max(14px,env(safe-area-inset-right)))}
+#loadingScreen,#updateNotice,#installHelp{inset:auto!important;top:var(--app-top)!important;left:var(--app-left)!important;width:var(--app-width);height:var(--app-height)}
+#siteTools{position:fixed;left:calc(var(--app-left,0px) + max(10px,env(safe-area-inset-left)));top:calc(var(--app-top,0px) + var(--app-height,100dvh) - max(8px,env(safe-area-inset-bottom)) - 30px);z-index:20;display:none;align-items:center;gap:8px;font-size:11px;color:#fff5dc;text-shadow:0 1px 3px #102638}
 .homeScreen #siteTools{display:flex}
 #siteTools button{padding:5px 9px;min-height:30px;font-size:11px;border:1px solid #d6ba7860;border-radius:7px;background:#102638a0}
 #installHelp{position:fixed;inset:0;z-index:1300;background:#102638ee;color:#fff0ce;overflow:auto;padding:max(22px,env(safe-area-inset-top)) max(22px,env(safe-area-inset-right)) max(22px,env(safe-area-inset-bottom)) max(22px,env(safe-area-inset-left));touch-action:pan-y}
