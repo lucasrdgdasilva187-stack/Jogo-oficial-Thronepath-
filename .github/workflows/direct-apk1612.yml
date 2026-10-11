@@ -14,12 +14,9 @@ jobs:
       - name: Conferir APK assinado
         run: |
           cat distribution/1.6.12/part-1.bin distribution/1.6.12/part-2.bin > Thronepath_v1_6_12.apk
-          echo 'eb5360ea3636cc7b876f48b4ec22ef1fcd7d291ca1525b2da579b4b850a2f8cb  Thronepath_v1_6_12.apk' | sha256sum --check --strict
+          echo 'cd1fa5b69b8044c3f0b3f50766313bd74aef5ef2b99fc5534426ec21e5e7f530  Thronepath_v1_6_12.apk' | sha256sum --check --strict
       - name: Publicar download direto
         env:
           GH_TOKEN: ${{ github.token }}
         run: >-
-          gh release create v1.6.12 Thronepath_v1_6_12.apk
-          --target d191bd8b31d05b048485c5535ac4a4de370edf86
-          --title 'Thronepath 1.6.12' --latest
-          --notes 'Menu ajustado para telas com a barra do navegador, sem cobrir o logo. Textos das conquistas com quebra de linha. Comandos de andar e pular preservados durante o reaparecimento. Espinhos retráteis sem peças cinzas; algumas barreiras de fogo e espinhos exigem esperar e lasers ampliados. Menos atualizações repetidas dos contadores. P: pausa; M: início. Progresso, cenários e final mantidos. APK com assinatura permanente e versão 1.6.12.'
+          gh release upload v1.6.12 Thronepath_v1_6_12.apk --clobber
