@@ -72,6 +72,15 @@ jobs:
           node tests/engine167.cjs web/index.html
           timeout 180 node tests/browser1611.cjs
           THRONEPATH_PACKAGED=1 timeout 180 node tests/browser1611.cjs
+          python3 scripts/upgrade1612.py
+          python3 scripts/package-android-web.py
+          GAME_HTML=web/index.html node tests/revision1612.cjs
+          GAME_HTML=web/index.html node tests/revision1612_journey.cjs
+          node tests/engine1612.cjs web/index.html
+          timeout 180 node tests/browser1612.cjs
+          THRONEPATH_PACKAGED=1 timeout 180 node tests/browser1612.cjs
+          timeout 180 node tests/browser1612_journey.cjs
+          THRONEPATH_PACKAGED=1 timeout 180 node tests/browser1612_journey.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
