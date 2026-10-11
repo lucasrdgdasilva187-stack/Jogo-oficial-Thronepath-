@@ -75,6 +75,7 @@ jobs:
           python3 scripts/upgrade1612.py
           python3 scripts/package-android-web.py
           GAME_HTML=web/index.html node tests/revision1612.cjs
+          GAME_HTML=web/index.html node tests/options1612.cjs
           GAME_HTML=web/index.html node tests/revision1612_journey.cjs
           node tests/engine1612.cjs web/index.html
           timeout 180 node tests/browser1612.cjs
